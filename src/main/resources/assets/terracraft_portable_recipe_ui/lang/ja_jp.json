@@ -1,0 +1,16 @@
+{
+  "key.terracraft_portable_recipe_ui.open": "作成の書棚を開く",
+  "category.terracraft_portable_recipe_ui": "Terracraft",
+  "screen.terracraft_portable_recipe_ui.title": "作成の書棚",
+  "screen.terracraft_portable_recipe_ui.bookshelf": "作成の書棚",
+  "screen.terracraft_portable_recipe_ui.recipe_book": "ネザー斧の設計書",
+  "screen.terracraft_portable_recipe_ui.recipe_name": "ネザー斧の設計書",
+  "screen.terracraft_portable_recipe_ui.preview": "ネザー斧",
+  "screen.terracraft_portable_recipe_ui.materials": "必要素材",
+  "screen.terracraft_portable_recipe_ui.back": "書棚へ戻る",
+  "screen.terracraft_portable_recipe_ui.open_hint": "本を選んで開く",
+  "screen.terracraft_portable_recipe_ui.recipes": "レシピ一覧",
+  "screen.terracraft_portable_recipe_ui.page": "%s / %s ページ",
+  "screen.terracraft_portable_recipe_ui.locked": "儀式により解放",
+  "screen.terracraft_portable_recipe_ui.craft": "作成する"
+}

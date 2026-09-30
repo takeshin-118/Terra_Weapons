@@ -1,38 +1,27 @@
 {
 	"schemaVersion": 1,
-	"id": "modid",
+	"id": "terracraft_portable_recipe_ui",
 	"version": "${version}",
-	"name": "Example Mod",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"name": "Terracraft Portable Recipe UI",
+	"description": "A multiplayer-safe portable recipe book for Terracraft.",
 	"authors": [
-		"Me!"
+		"shint"
 	],
-	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
-	},
-	"license": "CC0-1.0",
-	"icon": "assets/modid/icon.png",
+	"license": "All Rights Reserved",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.example.ExampleMod"
+		"jp.shint.terracraft.portablerecipe.PortableRecipeMod"
 		],
 		"client": [
-			"com.example.client.ExampleModClient"
+		"jp.shint.terracraft.portablerecipe.PortableRecipeClient"
 		]
 	},
-	"mixins": [
-		"modid.mixins.json",
-		{
-			"config": "modid.client.mixins.json",
-			"environment": "client"
-		}
-	],
 	"depends": {
-		"fabricloader": ">=0.19.5",
-		"minecraft": "~26.3",
-		"java": ">=25",
-		"fabric-api": "*"
+		"fabricloader": ">=0.18.1",
+		"minecraft": "~1.21.11",
+		"java": ">=21",
+		"fabric-api": "*",
+		"terracraft": ">=0.1.0"
 	}
 }
