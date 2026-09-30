@@ -1,0 +1,24 @@
+{
+  "item.terracraft.nether_axe": "Unnamed Nether Axe",
+  "block.terracraft.altar_core": "Altar Core",
+  "itemGroup.terracraft.terracraft": "Terracraft",
+  "message.terracraft.tree_limit": "The maximum number of simultaneous tree tasks has been reached",
+  "message.terracraft.tree_player_limit": "You can queue up to four tree-felling tasks",
+  "message.terracraft.tree_busy": "This tree is already being processed",
+  "message.terracraft.altar_ready": "The Nether Axe altar structure is complete",
+  "message.terracraft.altar_incomplete": "No matching altar structure is complete",
+  "message.terracraft.altar_busy": "This altar is already performing a ritual",
+  "message.terracraft.offerings_missing": "Missing offerings",
+  "message.terracraft.ritual_started": "Ritual started",
+  "message.terracraft.ritual_cancelled": "Ritual cancelled",
+  "message.terracraft.ritual_success": "Weapon permission acquired",
+  "message.terracraft.already_permitted": "You already have this weapon permission",
+  "hud.terracraft.granted": "You have been granted weapon permission by an administrator",
+  "hud.terracraft.revoked": "Weapon permission has been revoked",
+  "command.terracraft.reload": "Terracraft configuration reloaded",
+  "command.terracraft.reload_failed": "Terracraft configuration reload failed; the last valid settings are still active",
+  "command.terracraft.unknown_weapon": "Unknown weapon ID: %s",
+  "container.terracraft.altar": "Altar Offerings"
+  ,"message.terracraft.altar_in_use": "This altar is in use by another player",
+  "container.terracraft.portable_crafting": "Nether Axe Crafting"
+}

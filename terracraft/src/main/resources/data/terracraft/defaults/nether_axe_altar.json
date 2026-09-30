@@ -1,0 +1,24 @@
+{
+  "weapon_id": "nether_axe",
+  "display_order": 0,
+  "layers": [
+    ["GCRBG", "CBBRM", "RRCMM", "MRBRC", "GMBCG"],
+    [".....", ".....", "..A..", ".....", "....."]
+  ],
+  "symbols": {
+    "G": { "block": "minecraft:gilded_blackstone" },
+    "C": { "block": "minecraft:crying_obsidian" },
+    "B": { "block": "minecraft:polished_blackstone_bricks" },
+    "R": { "block": "minecraft:cracked_polished_blackstone_bricks" },
+    "M": { "block": "minecraft:magma_block" },
+    "A": { "block": "terracraft:altar_core" },
+    ".": { "air": true }
+  },
+  "offerings": [
+    { "item": "minecraft:netherite_ingot", "count": 2 },
+    { "item": "minecraft:blaze_rod", "count": 16 },
+    { "item": "minecraft:magma_cream", "count": 16 },
+    { "item": "minecraft:crying_obsidian", "count": 8 },
+    { "item": "minecraft:nether_star", "count": 1 }
+  ]
+}

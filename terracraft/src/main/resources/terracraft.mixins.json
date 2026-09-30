@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "package": "jp.shint.terracraft.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "ItemEntityMixin",
+    "EnchantmentScreenHandlerMixin",
+    "GrindstoneScreenHandlerMixin",
+    "CraftingScreenHandlerMixin",
+    "CrafterBlockMixin",
+    "AnvilScreenHandlerMixin"
+  ],
+  "client": [
+    "JeiIngredientListOverlayMixin"
+  ],
+  "injectors": { "defaultRequire": 1 }
+}

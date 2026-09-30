@@ -1,0 +1,11 @@
+{
+  "max_logs": 256,
+  "max_foliage": 1024,
+  "per_task_per_tick": 32,
+  "global_per_tick": 64,
+  "max_tasks": 16,
+  "max_tasks_per_player": 4,
+  "include_vines": true,
+  "include_cocoa": true,
+  "include_nether_foliage": true
+}

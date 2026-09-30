@@ -1,0 +1,6 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["DCD", "CNC", "DCD"],
+  "key": { "D": "minecraft:diamond_block", "C": "minecraft:crying_obsidian", "N": "minecraft:nether_star" },
+  "result": { "id": "terracraft:altar_core", "count": 1 }
+}
