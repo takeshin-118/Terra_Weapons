@@ -1,27 +1,13 @@
 {
-	"schemaVersion": 1,
-	"id": "terracraft_portable_recipe_ui",
-	"version": "${version}",
-	"name": "Terracraft Portable Recipe UI",
-	"description": "A multiplayer-safe portable recipe book for Terracraft.",
-	"authors": [
-		"shint"
-	],
-	"license": "All Rights Reserved",
-	"environment": "*",
-	"entrypoints": {
-		"main": [
-		"jp.shint.terracraft.portablerecipe.PortableRecipeMod"
-		],
-		"client": [
-		"jp.shint.terracraft.portablerecipe.PortableRecipeClient"
-		]
-	},
-	"depends": {
-		"fabricloader": ">=0.18.1",
-		"minecraft": "~1.21.11",
-		"java": ">=21",
-		"fabric-api": "*",
-		"terracraft": ">=0.1.0"
-	}
+  "schemaVersion": 1,
+  "id": "terracraft",
+  "version": "${version}",
+  "name": "Terracraft",
+  "description": "祭壇の儀式で武器の権利を獲得し、携帯レシピからネザー斧を作成するMODです。原木の一括伐採、祭壇コアの携帯作成、プレイヤーごとの権利管理に対応しています。",
+  "authors": ["shint"],
+  "environment": "*",
+  "entrypoints": { "main": ["jp.shint.terracraft.TerracraftMod"], "client": ["jp.shint.terracraft.TerracraftClient"] },
+  "mixins": ["terracraft.mixins.json"],
+  "breaks": { "terracraft_portable_recipe_ui": "*" },
+  "depends": { "fabricloader": ">=0.18.1", "minecraft": "~1.21.11", "java": ">=21", "fabric-api": "*", "geckolib": ">=5.4.2" }
 }

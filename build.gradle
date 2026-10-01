@@ -4,6 +4,7 @@ plugins {
 }
 
 repositories {
+    maven { url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
 	// Add repositories to retrieve artifacts from in here.
 	// You should only use this when depending on other mods because
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
@@ -15,7 +16,7 @@ loom {
 	splitEnvironmentSourceSets()
 
 	mods {
-		"terracraft_portable_recipe_ui" {
+		"terracraft" {
 			sourceSet sourceSets.main
 			sourceSet sourceSets.client
 		}
@@ -30,8 +31,14 @@ dependencies {
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-	modRuntimeOnly files("terracraft/build/libs/terracraft-0.1.0.jar")
+	modImplementation "software.bernie.geckolib:geckolib-fabric-1.21.11:5.4.2"
+	testImplementation platform('org.junit:junit-bom:5.11.4')
+	testImplementation 'org.junit.jupiter:junit-jupiter'
+	testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
+
+test { useJUnitPlatform() }
 
 processResources {
 	def version = project.version
@@ -63,6 +70,9 @@ jar {
 	from("LICENSE") {
 		rename { "${it}_$projectName"}
 	}
+	from("terracraft/LICENSE") {
+		rename { 'LICENSE_terracraft-core' }
+	}
 }
 
 // configure the maven publication
@@ -81,3 +91,5 @@ publishing {
 		// retrieving dependencies.
 	}
 }
+
+base { archivesName = 'terracraft' }

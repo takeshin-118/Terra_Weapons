@@ -9,4 +9,4 @@ pluginManagement {
 	}
 }
 
-rootProject.name = 'terracraft-portable-recipe-ui'
+rootProject.name = 'terracraft'

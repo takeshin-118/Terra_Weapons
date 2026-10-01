@@ -1,40 +1,71 @@
-# Terra_Weapons
+# Terra_Weapons（Terracraft）
 
-Minecraft Java 1.21.11 / Fabric 用の Terracraft 本体と携帯クラフト追加MODを管理するリポジトリです。
+祭壇の儀式で武器の権利を獲得し、携帯レシピから専用武器を作成する Minecraft Java 1.21.11 / Fabric 用MODです。武器・祭壇・携帯レシピを1本のJARにまとめています。現在の対応武器はネザー斧です。
 
-## 構成
+## 主な機能
 
-- `terracraft/`: MOD本体。武器、祭壇と儀式、権限管理、伐採処理、設定、コマンド、携帯クラフト、素材を含みます。
-- ルートの `src/`: 携帯クラフトのレシピブック追加MODと画像素材です。
-- `terracraft/docs/`: 本体の設定編集ガイドです。
+- **ネザー斧と一括伐採**：権利を持つプレイヤーが原木を壊すと、つながった原木などを上限付きで順次処理します。スニーク中は一括伐採を行いません。
+- **祭壇と儀式**：5×5の床と祭壇コアからなる構造を組み、供物を捧げてネザー斧の権利を獲得します。完成した祭壇コアを右クリックすると奉納画面を開けます。
+- **携帯レシピ**：`H`キーで書棚を開き、ネザー斧の設計書から素材の所持数・権利の取得状況を確認して作成します。初期キーは操作設定から変更できます。
+- **祭壇コアの携帯作成**：ネザー斧をメインハンドに持ち、スニークしながら右クリックすると作成画面を開きます。汎用の3×3作業台ではなく、祭壇コア用の作成画面です。
+- **プレイヤーごとの権利管理**：権利はUUID単位でワールドに保存します。斧を他人へ渡しても権利は移りません。権利のない所持者には攻撃性能の制限がかかります。
+- **サーバー設定**：祭壇の構造・供物や一括伐採の対象・処理上限をJSONで調整できます。
 
-本体と追加MODは別々のJARとしてビルドします。Java 21以上を用意し、リポジトリのルートで実行してください。
+携帯レシピの権利確認、素材消費、完成品の付与はサーバー側で処理します。受け取る空きがない場合は素材を消費しません。素材を使い切って空いた通常スロットにも完成品を受け取れます。
 
-```powershell
-.\terracraft\gradlew.bat -p terracraft build
-.\gradlew.bat build
+## 動作環境・導入
+
+| 項目 | 対応・必要バージョン |
+| --- | --- |
+| Minecraft Java | 1.21.11 |
+| Java | 21以上（ビルドにはJDKが必要） |
+| Fabric Loader | 0.18.1以上 |
+| Fabric API | ビルド・検証版：0.141.6+1.21.11 |
+| GeckoLib | 1.21.11用の5.4.2以上 |
+
+サーバーと参加する全クライアントの `mods` フォルダーに、依存MODと `terracraft-0.1.0.jar` を配置します。`-sources.jar` は開発用なので導入しません。
+
+### 旧2本構成からの移行
+
+1. 旧本体JARを統合版 `terracraft-0.1.0.jar` に差し替えます。
+2. 旧 `terracraft-portable-recipe-ui-*.jar` を `mods` フォルダーから外します。
+3. サーバーとクライアントの両方を統合版に揃えて起動します。
+
+旧追加MODとの同時導入は、登録の重複を防ぐためFabric Loaderが拒否します。MOD ID `terracraft`、アイテム・ブロックID、権利データ、携帯レシピのキー設定は維持しています。`terracraft_portable_recipe_ui` は素材・通信・キー設定の互換用名前空間として残り、独立したMODとしては読み込みません。
+
+## レシピと設定
+
+- ネザー斧：ネザライトインゴット×3、ブレイズロッド×2、ネザー斧の権利。
+- 祭壇コア：ダイヤモンドブロック×4、泣く黒曜石×4、ネザースター×1。
+- 儀式の標準供物：ネザライトインゴット×2、ブレイズロッド×16、マグマクリーム×16、泣く黒曜石×8、ネザースター×1。
+
+儀式の供物と武器作成の素材は別です。初回起動時に `config/terracraft/` へ設定ファイルを生成します。構造・供物・伐採設定の変更方法は[設定編集ガイド](terracraft/docs/設定編集ガイド.md)を参照してください。
+
+## 管理者コマンド
+
+権限レベル3以上で実行します。
+
+```text
+/terracraft weapon permission grant <player> nether_axe
+/terracraft weapon permission revoke <player> nether_axe
+/terracraft weapon permission check <player> nether_axe
+/terracraft weapon permission list <player>
+/terracraft config reload
 ```
 
-成果物は `terracraft/build/libs/terracraft-0.1.0.jar` と `build/libs/terracraft-portable-recipe-ui-0.1.0.jar` です。Fabric Loader、Fabric API、GeckoLib が必要です。本体の機能・設定については `terracraft/src/` と `terracraft/docs/` を参照してください。
+付与・剥奪ではプレイヤー名の代わりにUUIDも指定できます。
 
-## 携帯クラフト追加MOD
+## 開発・検証
 
-Terracraft の携帯クラフト用 Fabric クライアント UI です。`R`（設定で変更可）で開きます。
-
-## UI
-
-- 最初の画面は「書斎の本棚」。木製書棚、左右のランタン、中央の「テラクラのレシピ」をクリックして詳細を開きます。
-- 詳細は見開き本です。左ページにレシピ名・完成品プレビュー・戻るボタン、右ページに素材・所持数/必要数・解放条件・作成ボタンを表示します。
-- 足りない素材と未解放条件は赤色です。すべて満たすと「作成する」が金色になり、クリックできます。
-
-画面はクライアント側の表示と入力だけを担当します。所持素材、解放状態、消費、完成品の付与は既存のサーバー側 `PortableRecipeNetworking` が引き続き検証・処理します。
-
-## ビルド
-
-Java 21 を用意して、このディレクトリで実行します。
+Java 21のJDKを設定し、リポジトリのルートで実行します。
 
 ```powershell
-.\gradlew.bat build
+.\gradlew.bat clean build
 ```
 
-成果物は `build\libs\terracraft-portable-recipe-ui-<version>.jar` に生成されます。実行環境には Terracraft 本体と Fabric API が必要です。
+Linux/macOSでは `./gradlew clean build` を実行します。成果物は `build/libs/terracraft-0.1.0.jar` です。ビルド時に携帯レシピの素材消費・空きスロット判定の回帰テストも実行します。
+
+- `src/main/`：武器・祭壇・権利管理・携帯作成のサーバー処理と素材。
+- `src/client/`：祭壇・携帯作成・携帯レシピの画面。
+- `src/test/`：回帰テスト。
+- `terracraft/docs/`：設定編集ガイド。旧サブプロジェクトの個別ビルドは廃止済みです。

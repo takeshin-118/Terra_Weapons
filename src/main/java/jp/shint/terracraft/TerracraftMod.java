@@ -46,6 +46,7 @@ public final class TerracraftMod implements ModInitializer {
         TreeFellingManager.initialize();
         PermissionAttributeManager.initialize();
         PortableCrafting.initialize();
+        jp.shint.terracraft.portablerecipe.PortableRecipeNetworking.initializeServer();
         AltarSessionManager.initialize();
         AltarRitualManager.initialize();
         PermissionNotifications.initialize();

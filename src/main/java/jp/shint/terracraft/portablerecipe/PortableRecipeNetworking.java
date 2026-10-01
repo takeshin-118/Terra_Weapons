@@ -44,15 +44,11 @@ public final class PortableRecipeNetworking {
             sendState(player, "ブレイズロッドが不足しています");
             return;
         }
-        if (!canReceiveResult(player, TerracraftAccess.netherAxe())) {
+        if (!PortableRecipeCrafting.tryCraft(player.getInventory(), TerracraftAccess.netherAxe())) {
             sendState(player, "インベントリに空きがありません");
             return;
         }
 
-        removeIngredients(player, Items.NETHERITE_INGOT, 3);
-        removeIngredients(player, Items.BLAZE_ROD, 2);
-        ItemStack result = new ItemStack(TerracraftAccess.netherAxe());
-        player.getInventory().insertStack(result);
         player.currentScreenHandler.sendContentUpdates();
         sendState(player, "作成しました");
     }
@@ -70,29 +66,6 @@ public final class PortableRecipeNetworking {
             }
         }
         return count;
-    }
-
-    private static void removeIngredients(ServerPlayerEntity player, Item item, int amount) {
-        int remaining = amount;
-        for (int slot = 0; slot < player.getInventory().size() && remaining > 0; slot++) {
-            ItemStack stack = player.getInventory().getStack(slot);
-            if (!stack.isOf(item)) {
-                continue;
-            }
-            int remove = Math.min(remaining, stack.getCount());
-            stack.decrement(remove);
-            remaining -= remove;
-        }
-    }
-
-    private static boolean canReceiveResult(ServerPlayerEntity player, Item result) {
-        for (int slot = 0; slot < player.getInventory().size(); slot++) {
-            ItemStack stack = player.getInventory().getStack(slot);
-            if (stack.isEmpty() || (stack.isOf(result) && stack.getCount() < stack.getMaxCount())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private static void sendState(ServerPlayerEntity player, String message) {
