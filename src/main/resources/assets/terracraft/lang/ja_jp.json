@@ -1,5 +1,5 @@
 {
-  "item.terracraft.terra_axe": "名称未定のテラ斧",
+  "item.terracraft.terra_axe": "テラオノ",
   "block.terracraft.altar_core": "祭壇コア",
   "itemGroup.terracraft.terracraft": "Terracraft",
   "message.terracraft.tree_limit": "同時に処理できる木の上限に達しています",
@@ -19,15 +19,33 @@
   "command.terracraft.reload": "Terracraft設定を再読込しました",
   "command.terracraft.reload_failed": "Terracraft設定の再読込に失敗しました。直前の正常な設定を維持しています",
   "command.terracraft.unknown_weapon": "不明な武器ID: %s",
-  "container.terracraft.altar": "祭壇への奉納"
-  ,"message.terracraft.altar_in_use": "この祭壇はほかのプレイヤーが使用中です",
-  "container.terracraft.portable_crafting": "テラアックス携帯クラフト"
-  ,"screen.terracraft.altar.offerings": "供物の環"
-  ,"screen.terracraft.altar.structure": "祭壇構造"
-  ,"screen.terracraft.altar.complete": "緑: 設置済み  赤: 不足"
-  ,"screen.terracraft.altar.begin": "儀式を開始"
-  ,"screen.terracraft.portable.selected": "選択中: テラ斧"
-  ,"screen.terracraft.portable.materials": "必要素材: ダイヤブロック ×4 / 泣く黒曜石 ×4 / ネザースター ×1"
-  ,"screen.terracraft.portable.recipe": "作成物: 祭壇コア"
-  ,"screen.terracraft.portable.craft": "作成"
+  "container.terracraft.altar": "祭壇への奉納",
+  "message.terracraft.altar_in_use": "この祭壇はほかのプレイヤーが使用中です",
+  "container.terracraft.portable_crafting": "テラアックス携帯クラフト",
+  "screen.terracraft.altar.offerings": "供物の環",
+  "screen.terracraft.altar.structure": "祭壇構造",
+  "screen.terracraft.altar.complete": "緑: 設置済み  赤: 不足",
+  "screen.terracraft.altar.begin": "儀式を開始",
+  "screen.terracraft.portable.selected": "選択中: テラ斧",
+  "screen.terracraft.portable.materials": "必要素材: ダイヤブロック ×4 / 泣く黒曜石 ×4 / ネザースター ×1",
+  "screen.terracraft.portable.recipe": "作成物: 祭壇コア",
+  "screen.terracraft.portable.craft": "作成",
+  "item.terracraft.terra_axe_permission": "テラオノの権利取得アイテム",
+  "jei.terracraft.ritual.title": "Terra_axe 権利取得儀式",
+  "jei.terracraft.ritual.structure": "祭壇配置（中央の上に祭壇コア）",
+  "jei.terracraft.ritual.core": "祭壇コア（クリックで作成レシピ）",
+  "jei.terracraft.ritual.result": "権利取得アイテム",
+  "jei.terracraft.ritual.offerings": "必要な供物",
+  "jei.terracraft.ritual.steps1": "供物を奉納し、完成した祭壇で儀式を開始",
+  "jei.terracraft.ritual.steps2": "素材をクリックするとJEIで詳細を表示",
+  "jei.terracraft.scene.play": "回転",
+  "jei.terracraft.scene.reset": "初期化",
+  "jei.terracraft.scene.controls": "ホイール: 回転 / 床: コアを非表示",
+  "jei.terracraft.scene.click": "クリック: レシピ / 右クリック: 用途",
+  "jei.terracraft.scene.pause": "停止",
+  "jei.terracraft.scene.all": "全体",
+  "jei.terracraft.scene.floor": "床",
+  "jei.terracraft.scene.materials": "祭壇のブロック（床25個 + コア1個）",
+  "jei.terracraft.scene.rights": "権利",
+  "jei.terracraft.scene.position": "コアからの位置: X %s / Y %s / Z %s"
 }

@@ -25,18 +25,20 @@ public final class WeaponPermissions extends PersistentState {
     private final Map<UUID, Set<String>> rights = new HashMap<>();
     /** Last offline change per weapon. A later change replaces an earlier one. */
     private final Map<UUID, Map<String, Boolean>> pendingNotifications = new HashMap<>();
+    private static String canonicalId(String id) { return "nether_axe".equals(id) ? "terra_axe" : id; }
     public static WeaponPermissions get(MinecraftServer server) { return server.getOverworld().getPersistentStateManager().getOrCreate(TYPE); }
     public static boolean hasTerraAxe(ServerPlayerEntity player) { return player.isCreative() || get(player.getEntityWorld().getServer()).has(player.getUuid(), "terra_axe"); }
-    public boolean has(UUID player, String weapon) { return rights.getOrDefault(player, Set.of()).contains(weapon); }
+    public static boolean hasTerraAxeCraftPermission(ServerPlayerEntity player) { return get(player.getEntityWorld().getServer()).has(player.getUuid(), "terra_axe"); }
+    public boolean has(UUID player, String weapon) { return rights.getOrDefault(player, Set.of()).contains(canonicalId(weapon)); }
     public Set<String> list(UUID player) { return Set.copyOf(rights.getOrDefault(player, Set.of())); }
-    public void grant(UUID player, String weapon) { rights.computeIfAbsent(player, ignored -> new HashSet<>()).add(weapon); markDirty(); }
-    public void revoke(UUID player, String weapon) { Set<String> set = rights.get(player); if (set != null) { set.remove(weapon); if (set.isEmpty()) rights.remove(player); markDirty(); } }
-    public void queueNotification(UUID player, String weapon, boolean granted) { pendingNotifications.computeIfAbsent(player, ignored -> new HashMap<>()).put(weapon, granted); markDirty(); }
+    public void grant(UUID player, String weapon) { rights.computeIfAbsent(player, ignored -> new HashSet<>()).add(canonicalId(weapon)); markDirty(); }
+    public void revoke(UUID player, String weapon) { Set<String> set = rights.get(player); if (set != null) { set.remove(canonicalId(weapon)); if (set.isEmpty()) rights.remove(player); markDirty(); } }
+    public void queueNotification(UUID player, String weapon, boolean granted) { pendingNotifications.computeIfAbsent(player, ignored -> new HashMap<>()).put(canonicalId(weapon), granted); markDirty(); }
     public Map<String, Boolean> consumeNotifications(UUID player) { Map<String, Boolean> result = pendingNotifications.remove(player); if (result == null) return Map.of(); markDirty(); return Map.copyOf(result); }
     private static WeaponPermissions decode(Map<String, List<String>> encodedRights, Map<String, List<String>> encodedPending) {
         WeaponPermissions state = new WeaponPermissions();
-        encodedRights.forEach((uuid, weapons) -> { try { state.rights.put(UUID.fromString(uuid), new HashSet<>(weapons)); } catch (IllegalArgumentException ignored) { } });
-        encodedPending.forEach((uuid, changes) -> { try { Map<String, Boolean> values = new HashMap<>(); for (String value : changes) if (value.length() > 1 && (value.charAt(0) == '+' || value.charAt(0) == '-')) values.put(value.substring(1), value.charAt(0) == '+'); if (!values.isEmpty()) state.pendingNotifications.put(UUID.fromString(uuid), values); } catch (IllegalArgumentException ignored) { } });
+        encodedRights.forEach((uuid, weapons) -> { try { state.rights.put(UUID.fromString(uuid), weapons.stream().map(WeaponPermissions::canonicalId).collect(java.util.stream.Collectors.toSet())); } catch (IllegalArgumentException ignored) { } });
+        encodedPending.forEach((uuid, changes) -> { try { Map<String, Boolean> values = new HashMap<>(); for (String value : changes) if (value.length() > 1 && (value.charAt(0) == '+' || value.charAt(0) == '-')) values.put(canonicalId(value.substring(1)), value.charAt(0) == '+'); if (!values.isEmpty()) state.pendingNotifications.put(UUID.fromString(uuid), values); } catch (IllegalArgumentException ignored) { } });
         return state;
     }
     private Map<String, List<String>> encodeRights() {

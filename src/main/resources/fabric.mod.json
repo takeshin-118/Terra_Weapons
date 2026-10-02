@@ -6,7 +6,7 @@
   "description": "祭壇の儀式で武器の権利を獲得し、携帯レシピからテラ斧を作成するMODです。原木の一括伐採、祭壇コアの携帯作成、プレイヤーごとの権利管理に対応しています。",
   "authors": ["shint"],
   "environment": "*",
-  "entrypoints": { "main": ["jp.shint.terracraft.TerracraftMod"], "client": ["jp.shint.terracraft.TerracraftClient"] },
+  "entrypoints": { "main": ["jp.shint.terracraft.TerracraftMod"], "client": ["jp.shint.terracraft.TerracraftClient"], "jei_mod_plugin": ["jp.shint.terracraft.jei.TerracraftJeiClientPlugin"] },
   "mixins": ["terracraft.mixins.json"],
   "breaks": { "terracraft_portable_recipe_ui": "*" },
   "depends": { "fabricloader": ">=0.18.1", "minecraft": "~1.21.11", "java": ">=21", "fabric-api": "*", "geckolib": ">=5.4.2" }

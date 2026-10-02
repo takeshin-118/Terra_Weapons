@@ -18,7 +18,25 @@
   "command.terracraft.reload": "Terracraft configuration reloaded",
   "command.terracraft.reload_failed": "Terracraft configuration reload failed; the last valid settings are still active",
   "command.terracraft.unknown_weapon": "Unknown weapon ID: %s",
-  "container.terracraft.altar": "Altar Offerings"
-  ,"message.terracraft.altar_in_use": "This altar is in use by another player",
-  "container.terracraft.portable_crafting": "Terra Axe Crafting"
+  "container.terracraft.altar": "Altar Offerings",
+  "message.terracraft.altar_in_use": "This altar is in use by another player",
+  "container.terracraft.portable_crafting": "Terra Axe Crafting",
+  "item.terracraft.terra_axe_permission": "Terra Axe Permission Star",
+  "jei.terracraft.ritual.title": "Terra_axe Rights Ritual",
+  "jei.terracraft.ritual.structure": "Altar layout (core above the center)",
+  "jei.terracraft.ritual.core": "Altar Core (click for its crafting recipe)",
+  "jei.terracraft.ritual.result": "Rights item",
+  "jei.terracraft.ritual.offerings": "Required offerings",
+  "jei.terracraft.ritual.steps1": "Place offerings, then start the ritual at the completed altar",
+  "jei.terracraft.ritual.steps2": "Click an ingredient to view its JEI details",
+  "jei.terracraft.scene.play": "Rotate",
+  "jei.terracraft.scene.reset": "Reset",
+  "jei.terracraft.scene.controls": "Scroll: rotate / Floor: hide core",
+  "jei.terracraft.scene.click": "Click: recipes / Right-click: uses",
+  "jei.terracraft.scene.pause": "Stop",
+  "jei.terracraft.scene.all": "All",
+  "jei.terracraft.scene.floor": "Floor",
+  "jei.terracraft.scene.materials": "Structure (25 floor blocks + 1 core)",
+  "jei.terracraft.scene.rights": "Rights",
+  "jei.terracraft.scene.position": "From core: X %s / Y %s / Z %s"
 }

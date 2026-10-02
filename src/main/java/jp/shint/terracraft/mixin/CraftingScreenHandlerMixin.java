@@ -22,7 +22,7 @@ abstract class CraftingScreenHandlerMixin {
     private void terracraft$removeUnlicensedWeaponOutput(Inventory inventory, CallbackInfo ci) {
         ItemStack result = ((CraftingScreenHandler) (Object) this).getOutputSlot().getStack();
         if (result.isOf(TerracraftMod.TERRA_AXE) && getPlayer() instanceof ServerPlayerEntity player
-                && !WeaponPermissions.hasTerraAxe(player)) {
+                && !WeaponPermissions.hasTerraAxeCraftPermission(player)) {
             ((CraftingScreenHandler) (Object) this).getOutputSlot().setStack(ItemStack.EMPTY);
         }
     }

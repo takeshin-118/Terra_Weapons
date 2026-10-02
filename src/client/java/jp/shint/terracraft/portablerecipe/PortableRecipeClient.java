@@ -14,6 +14,8 @@ public final class PortableRecipeClient implements ClientModInitializer {
     private static KeyBinding openBook;
     private static volatile RecipeViewState state = RecipeViewState.loading();
     private static volatile int successVersion;
+    private static Object permissionConnection;
+    private static long nextPermissionRefresh;
 
     @Override
     public void onInitializeClient() {
@@ -36,7 +38,7 @@ public final class PortableRecipeClient implements ClientModInitializer {
                 if (client.currentScreen == null && client.player != null) {
                     state = RecipeViewState.loading();
                     client.setScreen(new PortableRecipeScreen());
-                    ClientPlayNetworking.send(new PortableRecipeNetworking.RequestStatePayload());
+                    requestState();
                 }
             }
         });
@@ -48,6 +50,38 @@ public final class PortableRecipeClient implements ClientModInitializer {
 
     static int successVersion() {
         return successVersion;
+    }
+
+    static void requestState() {
+        if (ClientPlayNetworking.canSend(PortableRecipeNetworking.REQUEST_STATE)) {
+            ClientPlayNetworking.send(new PortableRecipeNetworking.RequestStatePayload());
+        }
+    }
+
+    /** Server-confirmed permission for optional recipe viewers. Never infer it from an item. */
+    public static boolean hasCraftPermissionForRecipeViewer() {
+        var connection = MinecraftClient.getInstance().getNetworkHandler();
+        if (connection != permissionConnection) {
+            permissionConnection = connection;
+            state = RecipeViewState.loading();
+            nextPermissionRefresh = 0;
+        }
+        if (connection == null) return false;
+        long now = System.nanoTime();
+        if (now >= nextPermissionRefresh) {
+            nextPermissionRefresh = now + 1_000_000_000L;
+            requestState();
+        }
+        return state.loaded() && state.unlocked();
+    }
+
+    static boolean openRitual() {
+        try {
+            return (boolean) Class.forName("jp.shint.terracraft.jei.TerracraftJeiClientPlugin")
+                    .getMethod("openTerraAxeRitual").invoke(null);
+        } catch (ReflectiveOperationException | LinkageError exception) {
+            return false;
+        }
     }
 
     record RecipeViewState(boolean loaded, boolean unlocked, int netheriteCount, int blazeRodCount, String message) {

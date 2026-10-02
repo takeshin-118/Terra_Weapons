@@ -15,6 +15,6 @@ public final class TerracraftAccess {
     }
 
     public static boolean hasTerraAxePermission(ServerPlayerEntity player) {
-        return WeaponPermissions.hasTerraAxe(player);
+        return WeaponPermissions.hasTerraAxeCraftPermission(player);
     }
 }

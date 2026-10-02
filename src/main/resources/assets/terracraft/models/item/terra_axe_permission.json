@@ -1,0 +1,6 @@
+{
+  "textures": {
+    "layer0": "terracraft:item/terra_axe_permission"
+  },
+  "parent": "minecraft:item/generated"
+}

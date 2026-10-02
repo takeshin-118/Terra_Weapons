@@ -32,8 +32,21 @@ public final class PortableRecipeScreen extends Screen {
     private Page page=Page.BOOKSHELF;
     private int craftAnimationTicks;
     private int observedSuccessVersion;
+    private int stateRefreshTicks;
+    private boolean ritualUnavailable;
 
     public PortableRecipeScreen(){ super(Text.translatable("screen.terracraft_portable_recipe_ui.title")); }
+
+    @Override protected void init() {
+        PortableRecipeClient.requestState();
+    }
+
+    @Override public void tick() {
+        if (++stateRefreshTicks >= 20) {
+            stateRefreshTicks = 0;
+            PortableRecipeClient.requestState();
+        }
+    }
 
     @Override public void render(DrawContext c,int mx,int my,float delta){
         int latestSuccessVersion=PortableRecipeClient.successVersion();
@@ -92,7 +105,13 @@ public final class PortableRecipeScreen extends Screen {
         int matX=x+w*53/100,right=x+w*84/100;
         material(c,matX,y+h*29/100,right,new ItemStack(Items.NETHERITE_INGOT),"ネザライトインゴット",3,s.netheriteCount());
         material(c,matX,y+h*43/100,right,new ItemStack(Items.BLAZE_ROD),"ブレイズロッド",2,s.blazeRodCount());
-        ritualSigil(c,matX,y+h*58/100,Math.max(16,h*10/100));
+        Box permission = permissionIcon(b);
+        ritualSigil(c,permission.x(),permission.y()+permission.h()/2,permission.w());
+        if (!s.unlocked()) drawLock(c, permission);
+        if (screenHit(mx,my,permission,DETAIL_SCALE)) {
+            c.drawStrokedRectangle(permission.x()-1,permission.y()-1,permission.w()+2,permission.h()+2,GOLD);
+            centerScaled(c,Text.literal(ritualUnavailable?"儀式表示にはJEIが必要です":"クリックで権利取得の儀式を表示"),rightCenter,y+h*23/100,INK,0.65F);
+        }
         centerScaled(c,Text.literal(s.unlocked()?"クラフト権利：取得済み":"クラフト権利：未取得"),x+w*71/100,y+h*58/100,s.unlocked()?INK:RED,1F);
         boolean can=s.unlocked()&&s.netheriteCount()>=3&&s.blazeRodCount()>=2;
         if(!can) centerScaled(c,Text.literal(reason(s)),rightCenter,y+h*68/100,RED,0.8F); else if(!s.message().isBlank()) centerScaled(c,Text.literal(s.message()),rightCenter,y+h*68/100,INK,0.8F);
@@ -138,13 +157,29 @@ public final class PortableRecipeScreen extends Screen {
         c.drawTexture(RenderPipelines.GUI_TEXTURED,CRAFT_PERMISSION,x,centerY-size/2,
                 0,0,size,size,1254,1254,1254,1254);
     }
+    private void drawLock(DrawContext c,Box icon){
+        // A pixel padlock overlays the lower-right corner without changing the star itself.
+        c.getMatrices().pushMatrix();
+        c.getMatrices().translate(icon.right()-10,icon.bottom()-12);
+        c.fill(2,0,8,7,DARK);
+        c.fill(3,1,7,6,0xFFAAAAAA);
+        c.fill(4,3,6,6,DARK);
+        c.fill(0,5,10,12,DARK);
+        c.fill(1,6,9,11,0xFFAAAAAA);
+        c.fill(4,7,6,10,DARK);
+        c.getMatrices().popMatrix();
+    }
     private String reason(PortableRecipeClient.RecipeViewState s){ if(!s.unlocked())return "解放条件を満たしていません"; if(s.netheriteCount()<3)return "不足：ネザライト "+(3-s.netheriteCount())+"個"; return "不足：ブレイズロッド "+(2-s.blazeRodCount())+"本"; }
     private void text(DrawContext c,Text v,int x,int y,int color){ c.drawText(textRenderer,v,x,y,color,false); }
     private void center(DrawContext c,Text v,int x,int y,int color){ text(c,v,x-textRenderer.getWidth(v)/2,y,color); }
 
     @Override public boolean mouseClicked(Click click,boolean doubleClicked){ if(click.button()!=0)return super.mouseClicked(click,doubleClicked); Box s=shelf(),b=book();
-        if(page==Page.BOOKSHELF&&screenHit(click.x(),click.y(),recipeBook(s),BOOKSHELF_SCALE)){page=Page.DETAIL;return true;}
+        if(page==Page.BOOKSHELF&&screenHit(click.x(),click.y(),recipeBook(s),BOOKSHELF_SCALE)){page=Page.DETAIL;PortableRecipeClient.requestState();return true;}
         if(page==Page.DETAIL&&screenHit(click.x(),click.y(),back(b),DETAIL_SCALE)){page=Page.BOOKSHELF;return true;}
+        if(page==Page.DETAIL&&screenHit(click.x(),click.y(),permissionIcon(b),DETAIL_SCALE)){
+            ritualUnavailable=!PortableRecipeClient.openRitual();
+            return true;
+        }
         if(page==Page.DETAIL&&screenHit(click.x(),click.y(),craft(b),DETAIL_SCALE)){
             PortableRecipeClient.RecipeViewState state=PortableRecipeClient.state();
             if(state.unlocked()&&state.netheriteCount()>=3&&state.blazeRodCount()>=2){ClientPlayNetworking.send(new PortableRecipeNetworking.CraftTerraAxePayload());}
@@ -174,6 +209,7 @@ public final class PortableRecipeScreen extends Screen {
     /** Pixel-measured plates in the 1008 x 611 open-book crop. */
     private Box back(Box b){return new Box(b.x()+b.w()*17/100,b.y()+b.h()*73/100,b.w()*20/100,b.h()*10/100);}
     private Box craft(Box b){return new Box(b.x()+b.w()*58/100,b.y()+b.h()*69/100,b.w()*24/100,b.h()*13/100);}
+    private Box permissionIcon(Box b){int size=Math.max(16,b.h()*10/100);return new Box(b.x()+b.w()*53/100,b.y()+b.h()*58/100-size/2,size,size);}
     private record Box(int x,int y,int w,int h){int right(){return x+w;}int bottom(){return y+h;}boolean contains(double x,double y){return hit(x,y,x(),y(),w,h);}}
     private enum Page{BOOKSHELF,DETAIL}
 }

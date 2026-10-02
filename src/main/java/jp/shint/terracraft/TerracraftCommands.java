@@ -19,45 +19,58 @@ public final class TerracraftCommands {
     private static final Logger LOGGER = LoggerFactory.getLogger("terracraft-commands");
     private TerracraftCommands() { }
     public static void initialize() { CommandRegistrationCallback.EVENT.register(TerracraftCommands::register); }
+    private static com.mojang.brigadier.builder.RequiredArgumentBuilder<ServerCommandSource, String> weaponArgument() {
+        return CommandManager.argument("weaponId", StringArgumentType.word())
+                .suggests((context, builder) -> net.minecraft.command.CommandSource.suggestMatching(
+                        java.util.List.of("terra_axe"), builder));
+    }
     private static void register(com.mojang.brigadier.CommandDispatcher<ServerCommandSource> d, CommandRegistryAccess a, CommandManager.RegistrationEnvironment e) {
         var permission = CommandManager.literal("permission");
-        permission.then(CommandManager.literal("grant").then(CommandManager.argument("player", EntityArgumentType.player()).then(CommandManager.argument("weaponId", StringArgumentType.word()).executes(c -> change(c.getSource(), EntityArgumentType.getPlayer(c, "player").getUuid(), EntityArgumentType.getPlayer(c, "player").getName().getString(), StringArgumentType.getString(c, "weaponId"), true)))).then(CommandManager.argument("uuid", UuidArgumentType.uuid()).then(CommandManager.argument("weaponId", StringArgumentType.word()).executes(c -> change(c.getSource(), UuidArgumentType.getUuid(c, "uuid"), UuidArgumentType.getUuid(c, "uuid").toString(), StringArgumentType.getString(c, "weaponId"), true)))));
-        permission.then(CommandManager.literal("revoke").then(CommandManager.argument("player", EntityArgumentType.player()).then(CommandManager.argument("weaponId", StringArgumentType.word()).executes(c -> change(c.getSource(), EntityArgumentType.getPlayer(c, "player").getUuid(), EntityArgumentType.getPlayer(c, "player").getName().getString(), StringArgumentType.getString(c, "weaponId"), false)))).then(CommandManager.argument("uuid", UuidArgumentType.uuid()).then(CommandManager.argument("weaponId", StringArgumentType.word()).executes(c -> change(c.getSource(), UuidArgumentType.getUuid(c, "uuid"), UuidArgumentType.getUuid(c, "uuid").toString(), StringArgumentType.getString(c, "weaponId"), false)))));
-        permission.then(CommandManager.literal("check").then(CommandManager.argument("player", EntityArgumentType.player()).then(CommandManager.argument("weaponId", StringArgumentType.word()).executes(c -> check(c.getSource(), EntityArgumentType.getPlayer(c, "player").getUuid(), EntityArgumentType.getPlayer(c, "player").getName().getString(), StringArgumentType.getString(c, "weaponId"))))));
+        permission.then(CommandManager.literal("grant").then(CommandManager.argument("player", EntityArgumentType.player()).then(weaponArgument().executes(c -> change(c.getSource(), EntityArgumentType.getPlayer(c, "player").getUuid(), EntityArgumentType.getPlayer(c, "player").getName().getString(), StringArgumentType.getString(c, "weaponId"), true)))).then(CommandManager.argument("uuid", UuidArgumentType.uuid()).then(weaponArgument().executes(c -> change(c.getSource(), UuidArgumentType.getUuid(c, "uuid"), UuidArgumentType.getUuid(c, "uuid").toString(), StringArgumentType.getString(c, "weaponId"), true)))));
+        permission.then(CommandManager.literal("revoke").then(CommandManager.argument("player", EntityArgumentType.player()).then(weaponArgument().executes(c -> change(c.getSource(), EntityArgumentType.getPlayer(c, "player").getUuid(), EntityArgumentType.getPlayer(c, "player").getName().getString(), StringArgumentType.getString(c, "weaponId"), false)))).then(CommandManager.argument("uuid", UuidArgumentType.uuid()).then(weaponArgument().executes(c -> change(c.getSource(), UuidArgumentType.getUuid(c, "uuid"), UuidArgumentType.getUuid(c, "uuid").toString(), StringArgumentType.getString(c, "weaponId"), false)))));
+        permission.then(CommandManager.literal("check").then(CommandManager.argument("player", EntityArgumentType.player()).then(weaponArgument().executes(c -> check(c.getSource(), EntityArgumentType.getPlayer(c, "player").getUuid(), EntityArgumentType.getPlayer(c, "player").getName().getString(), StringArgumentType.getString(c, "weaponId"))))));
         permission.then(CommandManager.literal("list").then(CommandManager.argument("player", EntityArgumentType.player()).executes(c -> list(c.getSource(), EntityArgumentType.getPlayer(c, "player").getUuid(), EntityArgumentType.getPlayer(c, "player").getName().getString()))));
         d.register(CommandManager.literal("terracraft").requires(source -> source.getPermissions().hasPermission(new Permission.Level(PermissionLevel.ADMINS)))
                 .then(CommandManager.literal("weapon").then(permission))
                 .then(CommandManager.literal("config").then(CommandManager.literal("reload").executes(c -> reload(c.getSource())))));
     }
     private static int change(ServerCommandSource source, UUID player, String name, String id, boolean grant) {
-        if (!"terra_axe".equals(id)) { source.sendError(Text.literal("Unknown Terracraft weapon: " + id)); return 0; }
+        String storedId = permissionKey(id);
+        if (storedId == null) { source.sendError(Text.literal("Unknown Terracraft weapon: " + id)); return 0; }
         if (grant) {
-            WeaponPermissions.get(source.getServer()).grant(player, id);
+            WeaponPermissions.get(source.getServer()).grant(player, storedId);
             ServerPlayerEntity online = source.getServer().getPlayerManager().getPlayer(player);
             if (online != null) {
                 TerracraftRecipes.unlockTerraAxe(online);
                 PermissionHud.granted(online);
-            } else WeaponPermissions.get(source.getServer()).queueNotification(player, id, true);
+            } else WeaponPermissions.get(source.getServer()).queueNotification(player, storedId, true);
         } else {
-            WeaponPermissions.get(source.getServer()).revoke(player, id);
+            WeaponPermissions.get(source.getServer()).revoke(player, storedId);
             ServerPlayerEntity online = source.getServer().getPlayerManager().getPlayer(player);
             if (online != null) {
                 TerracraftRecipes.lockTerraAxe(online);
                 PermissionHud.revoked(online);
-            } else WeaponPermissions.get(source.getServer()).queueNotification(player, id, false);
+            } else WeaponPermissions.get(source.getServer()).queueNotification(player, storedId, false);
         }
         LOGGER.info("Terracraft permission {}: actor={}, target={}, weapon={}, time={}", grant ? "grant" : "revoke", source.getName(), player, id, java.time.Instant.now());
         source.sendFeedback(() -> Text.literal((grant ? "Granted " : "Revoked ") + id + " for " + name), true);
         return 1;
     }
     private static int check(ServerCommandSource source, UUID player, String name, String id) {
-        boolean result = "terra_axe".equals(id) && WeaponPermissions.get(source.getServer()).has(player, id);
+        String storedId = permissionKey(id);
+        if (storedId == null) { source.sendError(Text.literal("Unknown Terracraft weapon: " + id)); return 0; }
+        boolean result = WeaponPermissions.get(source.getServer()).has(player, storedId);
         source.sendFeedback(() -> Text.literal(name + ": " + result), false); return result ? 1 : 0;
     }
     private static int list(ServerCommandSource source, UUID player, String name) {
-        var rights = WeaponPermissions.get(source.getServer()).list(player);
+        var rights = WeaponPermissions.get(source.getServer()).list(player).stream()
+                .map(id -> "nether_axe".equals(id) ? "terra_axe" : id).sorted().toList();
         source.sendFeedback(() -> Text.literal(name + ": " + (rights.isEmpty() ? "(none)" : String.join(", ", rights))), false);
         return rights.size();
+    }
+    // Keep the persisted key shared with rituals and older saves; accept both command names.
+    private static String permissionKey(String id) {
+        return "terra_axe".equals(id) || "nether_axe".equals(id) ? "terra_axe" : null;
     }
     private static int reload(ServerCommandSource source) {
         boolean ok = TerracraftConfig.load();

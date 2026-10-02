@@ -24,6 +24,9 @@ import net.minecraft.util.Identifier;
 public final class TerracraftMod implements ModInitializer {
     public static final String MOD_ID = "terracraft";
     public static final int TERRA_AXE_MAX_DAMAGE = 4062;
+    // Informational token only: possessing it does not grant a permission.
+    public static final Item TERRA_AXE_PERMISSION = registerItem("terra_axe_permission",
+            new Item(settings("terra_axe_permission").maxCount(1)));
     public static final Item TERRA_AXE = registerItem("terra_axe", new AxeItem(ToolMaterial.NETHERITE, 11.0F, -3.3333333F,
             settings("terra_axe").maxCount(1).maxDamage(TERRA_AXE_MAX_DAMAGE).repairable(Items.NETHERITE_INGOT)));
     public static final Block ALTAR_CORE = registerBlock("altar_core", new AltarCoreBlock(AbstractBlock.Settings.copy(Blocks.OBSIDIAN)
@@ -42,6 +45,10 @@ public final class TerracraftMod implements ModInitializer {
     private static Item registerItem(String path, Item item) { return Registry.register(Registries.ITEM, id(path), item); }
     private static Block registerBlock(String path, Block block) { return Registry.register(Registries.BLOCK, id(path), block); }
     @Override public void onInitialize() {
+        net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents.modifyEntriesEvent(net.minecraft.item.ItemGroups.COMBAT)
+                .register(entries -> entries.add(TERRA_AXE));
+        net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents.modifyEntriesEvent(net.minecraft.item.ItemGroups.INGREDIENTS)
+                .register(entries -> entries.add(TERRA_AXE_PERMISSION));
         TerracraftConfig.load();
         TreeFellingManager.initialize();
         PermissionAttributeManager.initialize();
