@@ -20,7 +20,7 @@ public final class PortableCraftingScreenHandler extends ScreenHandler {
     @Override public boolean canUse(PlayerEntity player) { return true; }
     @Override public ItemStack quickMove(PlayerEntity player, int index) { return ItemStack.EMPTY; }
     @Override public boolean onButtonClick(PlayerEntity player, int id) {
-        if (id != 0 || !player.getMainHandStack().isOf(TerracraftMod.NETHER_AXE)) return false;
+        if (id != 0 || !player.getMainHandStack().isOf(TerracraftMod.TERRA_AXE)) return false;
         Item[] required = {Items.DIAMOND_BLOCK, Items.CRYING_OBSIDIAN, Items.DIAMOND_BLOCK, Items.CRYING_OBSIDIAN,
                 Items.NETHER_STAR, Items.CRYING_OBSIDIAN, Items.DIAMOND_BLOCK, Items.CRYING_OBSIDIAN, Items.DIAMOND_BLOCK};
         for (Item item : required) if (count(player.getInventory(), item) < occurrences(required, item)) return false;

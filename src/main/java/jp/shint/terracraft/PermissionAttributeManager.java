@@ -14,8 +14,8 @@ import net.minecraft.util.Identifier;
  * traded axe immediately uses the recipient's permission state.
  */
 public final class PermissionAttributeManager {
-    private static final Identifier DAMAGE_ID = TerracraftMod.id("restricted_nether_axe_damage");
-    private static final Identifier SPEED_ID = TerracraftMod.id("restricted_nether_axe_speed");
+    private static final Identifier DAMAGE_ID = TerracraftMod.id("restricted_terra_axe_damage");
+    private static final Identifier SPEED_ID = TerracraftMod.id("restricted_terra_axe_speed");
     private static final EntityAttributeModifier DAMAGE_PENALTY = new EntityAttributeModifier(
             DAMAGE_ID, -3.0, EntityAttributeModifier.Operation.ADD_VALUE);
     // The registered axe is 12 damage / 0.6667 speed. This restores stone-axe
@@ -31,8 +31,8 @@ public final class PermissionAttributeManager {
 
     private static void refresh(MinecraftServer server) {
         for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
-            boolean restricted = player.getMainHandStack().isOf(TerracraftMod.NETHER_AXE)
-                    && !WeaponPermissions.hasNetherAxe(player);
+            boolean restricted = player.getMainHandStack().isOf(TerracraftMod.TERRA_AXE)
+                    && !WeaponPermissions.hasTerraAxe(player);
             set(player.getAttributeInstance(EntityAttributes.ATTACK_DAMAGE), DAMAGE_ID, DAMAGE_PENALTY, restricted);
             set(player.getAttributeInstance(EntityAttributes.ATTACK_SPEED), SPEED_ID, SPEED_COMPENSATION, restricted);
         }

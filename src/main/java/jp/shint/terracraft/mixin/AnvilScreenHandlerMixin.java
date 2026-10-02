@@ -25,14 +25,14 @@ abstract class AnvilScreenHandlerMixin {
 
     @Inject(method = "updateResult", at = @At("TAIL"))
     private void terracraft$applyTerracraftAnvilCost(CallbackInfo ci) {
-        if (!((AnvilScreenHandler) (Object) this).getSlot(0).getStack().isOf(TerracraftMod.NETHER_AXE)) return;
+        if (!((AnvilScreenHandler) (Object) this).getSlot(0).getStack().isOf(TerracraftMod.TERRA_AXE)) return;
         int cost = levelCost.get();
         if (cost > 0) levelCost.set(Math.min(51, (int) Math.ceil(cost * 1.3D)));
     }
 
     @Inject(method = "canTakeOutput", at = @At("HEAD"), cancellable = true)
     private void terracraft$permitLevelFiftyOne(PlayerEntity player, boolean present, CallbackInfoReturnable<Boolean> cir) {
-        if (!((AnvilScreenHandler) (Object) this).getSlot(0).getStack().isOf(TerracraftMod.NETHER_AXE)) return;
+        if (!((AnvilScreenHandler) (Object) this).getSlot(0).getStack().isOf(TerracraftMod.TERRA_AXE)) return;
         int cost = levelCost.get();
         cir.setReturnValue(present && (player.getAbilities().creativeMode || (cost > 0 && cost <= 51 && player.experienceLevel >= cost)));
     }

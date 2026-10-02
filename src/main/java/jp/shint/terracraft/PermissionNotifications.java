@@ -10,12 +10,12 @@ public final class PermissionNotifications {
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             var player = handler.player;
             WeaponPermissions.get(server).consumeNotifications(player.getUuid()).forEach((weapon, granted) -> {
-                if (!"nether_axe".equals(weapon)) return;
+                if (!"terra_axe".equals(weapon)) return;
                 if (granted) {
-                    TerracraftRecipes.unlockNetherAxe(player);
+                    TerracraftRecipes.unlockTerraAxe(player);
                     PermissionHud.granted(player);
                 } else {
-                    TerracraftRecipes.lockNetherAxe(player);
+                    TerracraftRecipes.lockTerraAxe(player);
                     PermissionHud.revoked(player);
                 }
             });

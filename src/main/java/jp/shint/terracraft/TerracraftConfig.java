@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 /** Validated external altar definition. An invalid reload never replaces the last good definition. */
 public final class TerracraftConfig {
     private static final Logger LOGGER = LoggerFactory.getLogger("terracraft-config");
-    private static final Path FILE = FabricLoader.getInstance().getConfigDir().resolve("terracraft").resolve("nether_axe_altar.json");
+    private static final Path FILE = FabricLoader.getInstance().getConfigDir().resolve("terracraft").resolve("terra_axe_altar.json");
     private static final Path TREE_FILE = FabricLoader.getInstance().getConfigDir().resolve("terracraft").resolve("tree_felling.json");
     private static volatile AltarDefinition definition = AltarDefinition.defaults();
     private static volatile TreeFellingDefinition treeDefinition = TreeFellingDefinition.defaults();
@@ -83,7 +83,7 @@ public final class TerracraftConfig {
     private static void ensureTemplate() throws IOException {
         if (Files.exists(FILE)) return;
         Files.createDirectories(FILE.getParent());
-        try (InputStream input = TerracraftConfig.class.getResourceAsStream("/data/terracraft/defaults/nether_axe_altar.json")) {
+        try (InputStream input = TerracraftConfig.class.getResourceAsStream("/data/terracraft/defaults/terra_axe_altar.json")) {
             if (input == null) throw new IOException("Bundled altar template is missing");
             Files.copy(input, FILE);
         }
@@ -91,7 +91,7 @@ public final class TerracraftConfig {
 
     private static AltarDefinition parse(String source) {
         JsonObject root = JsonParser.parseString(source).getAsJsonObject();
-        if (!"nether_axe".equals(root.get("weapon_id").getAsString())) throw new IllegalArgumentException("weapon_id must be nether_axe");
+        if (!"terra_axe".equals(root.get("weapon_id").getAsString())) throw new IllegalArgumentException("weapon_id must be terra_axe");
         JsonArray rawLayers = root.getAsJsonArray("layers");
         if (rawLayers == null || rawLayers.size() != 2) throw new IllegalArgumentException("layers must contain exactly two layers");
         String[][] layers = new String[2][5];

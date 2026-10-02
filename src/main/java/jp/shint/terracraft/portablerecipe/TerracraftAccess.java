@@ -10,11 +10,11 @@ public final class TerracraftAccess {
     private TerracraftAccess() {
     }
 
-    public static Item netherAxe() {
-        return TerracraftMod.NETHER_AXE;
+    public static Item terraAxe() {
+        return TerracraftMod.TERRA_AXE;
     }
 
-    public static boolean hasNetherAxePermission(ServerPlayerEntity player) {
-        return WeaponPermissions.hasNetherAxe(player);
+    public static boolean hasTerraAxePermission(ServerPlayerEntity player) {
+        return WeaponPermissions.hasTerraAxe(player);
     }
 }

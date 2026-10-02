@@ -21,7 +21,7 @@ public final class AltarCoreBlock extends BlockWithEntity {
     @Override public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         if (!world.isClient()) {
             if (player instanceof net.minecraft.server.network.ServerPlayerEntity serverPlayer) {
-                boolean structureComplete = AltarStructure.matchesNetherAxe(world, pos);
+                boolean structureComplete = AltarStructure.matchesTerraAxe(world, pos);
                 // An incomplete altar never opens the ritual UI: construction feedback stays in-world.
                 if (!structureComplete) {
                     player.sendMessage(Text.translatable("message.terracraft.altar_incomplete_detail"), true);

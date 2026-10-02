@@ -23,9 +23,9 @@ import net.minecraft.util.Identifier;
 /** Central registration point. Change provisional IDs here before a production world is created. */
 public final class TerracraftMod implements ModInitializer {
     public static final String MOD_ID = "terracraft";
-    public static final int NETHER_AXE_MAX_DAMAGE = 4062;
-    public static final Item NETHER_AXE = registerItem("nether_axe", new AxeItem(ToolMaterial.NETHERITE, 11.0F, -3.3333333F,
-            settings("nether_axe").maxCount(1).maxDamage(NETHER_AXE_MAX_DAMAGE).repairable(Items.NETHERITE_INGOT)));
+    public static final int TERRA_AXE_MAX_DAMAGE = 4062;
+    public static final Item TERRA_AXE = registerItem("terra_axe", new AxeItem(ToolMaterial.NETHERITE, 11.0F, -3.3333333F,
+            settings("terra_axe").maxCount(1).maxDamage(TERRA_AXE_MAX_DAMAGE).repairable(Items.NETHERITE_INGOT)));
     public static final Block ALTAR_CORE = registerBlock("altar_core", new AltarCoreBlock(AbstractBlock.Settings.copy(Blocks.OBSIDIAN)
             .registryKey(RegistryKey.of(RegistryKeys.BLOCK, id("altar_core"))).luminance(state -> 10).requiresTool()
             .pistonBehavior(PistonBehavior.BLOCK)));

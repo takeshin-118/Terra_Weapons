@@ -3,7 +3,7 @@
   "id": "terracraft",
   "version": "${version}",
   "name": "Terracraft",
-  "description": "祭壇の儀式で武器の権利を獲得し、携帯レシピからネザー斧を作成するMODです。原木の一括伐採、祭壇コアの携帯作成、プレイヤーごとの権利管理に対応しています。",
+  "description": "祭壇の儀式で武器の権利を獲得し、携帯レシピからテラ斧を作成するMODです。原木の一括伐採、祭壇コアの携帯作成、プレイヤーごとの権利管理に対応しています。",
   "authors": ["shint"],
   "environment": "*",
   "entrypoints": { "main": ["jp.shint.terracraft.TerracraftMod"], "client": ["jp.shint.terracraft.TerracraftClient"] },

@@ -3,5 +3,5 @@
   "category": "equipment",
   "pattern": [" NN", " BN", " B "],
   "key": { "N": "minecraft:netherite_ingot", "B": "minecraft:blaze_rod" },
-  "result": { "id": "terracraft:nether_axe", "count": 1 }
+  "result": { "id": "terracraft:terra_axe", "count": 1 }
 }

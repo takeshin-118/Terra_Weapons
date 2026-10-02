@@ -62,7 +62,7 @@ public final class TreeFellingManager {
     }
 
     private static boolean eligible(ServerPlayerEntity player, BlockState state) {
-        if (!player.interactionManager.getGameMode().isSurvivalLike() || !WeaponPermissions.hasNetherAxe(player) || player.isSneaking() || !player.getMainHandStack().isOf(TerracraftMod.NETHER_AXE)) return false;
+        if (!player.interactionManager.getGameMode().isSurvivalLike() || !WeaponPermissions.hasTerraAxe(player) || player.isSneaking() || !player.getMainHandStack().isOf(TerracraftMod.TERRA_AXE)) return false;
         return isTargetLog(state);
     }
 
@@ -167,7 +167,7 @@ public final class TreeFellingManager {
             Task task = iterator.next();
             ServerPlayerEntity player = server.getPlayerManager().getPlayer(task.playerId);
             if (player == null || player.getEntityWorld() != task.world || !player.isAlive()
-                    || !player.getMainHandStack().isOf(TerracraftMod.NETHER_AXE)
+                    || !player.getMainHandStack().isOf(TerracraftMod.TERRA_AXE)
                     || !task.axeId.equals(axeId(player.getMainHandStack()))) { release(task); iterator.remove(); continue; }
             int used = 0;
             while (used < TerracraftConfig.tree().perTaskPerTick() && budget > 0 && !task.positions.isEmpty()) {
@@ -193,7 +193,7 @@ public final class TreeFellingManager {
         for (int left = 0; left < drops.size(); left++) {
             ItemEntity target = drops.get(left);
             ItemStack targetStack = target.getStack();
-            if (targetStack.isEmpty() || targetStack.isOf(TerracraftMod.NETHER_AXE)) continue;
+            if (targetStack.isEmpty() || targetStack.isOf(TerracraftMod.TERRA_AXE)) continue;
             for (int right = left + 1; right < drops.size() && !targetStack.isEmpty(); right++) {
                 ItemEntity source = drops.get(right);
                 ItemStack sourceStack = source.getStack();

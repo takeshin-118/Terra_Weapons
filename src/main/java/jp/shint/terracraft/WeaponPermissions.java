@@ -26,7 +26,7 @@ public final class WeaponPermissions extends PersistentState {
     /** Last offline change per weapon. A later change replaces an earlier one. */
     private final Map<UUID, Map<String, Boolean>> pendingNotifications = new HashMap<>();
     public static WeaponPermissions get(MinecraftServer server) { return server.getOverworld().getPersistentStateManager().getOrCreate(TYPE); }
-    public static boolean hasNetherAxe(ServerPlayerEntity player) { return player.isCreative() || get(player.getEntityWorld().getServer()).has(player.getUuid(), "nether_axe"); }
+    public static boolean hasTerraAxe(ServerPlayerEntity player) { return player.isCreative() || get(player.getEntityWorld().getServer()).has(player.getUuid(), "terra_axe"); }
     public boolean has(UUID player, String weapon) { return rights.getOrDefault(player, Set.of()).contains(weapon); }
     public Set<String> list(UUID player) { return Set.copyOf(rights.getOrDefault(player, Set.of())); }
     public void grant(UUID player, String weapon) { rights.computeIfAbsent(player, ignored -> new HashSet<>()).add(weapon); markDirty(); }

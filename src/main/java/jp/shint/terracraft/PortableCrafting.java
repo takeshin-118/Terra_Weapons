@@ -13,7 +13,7 @@ public final class PortableCrafting {
     public static void initialize() {
         UseItemCallback.EVENT.register((player, world, hand) -> {
             if (world.isClient() || hand != Hand.MAIN_HAND || !player.isSneaking()
-                    || !player.getStackInHand(hand).isOf(TerracraftMod.NETHER_AXE)) return ActionResult.PASS;
+                    || !player.getStackInHand(hand).isOf(TerracraftMod.TERRA_AXE)) return ActionResult.PASS;
             player.openHandledScreen(new SimpleNamedScreenHandlerFactory((syncId, inventory, ignored) ->
                     new PortableCraftingScreenHandler(syncId, inventory),
                     Text.translatable("container.terracraft.portable_crafting")));

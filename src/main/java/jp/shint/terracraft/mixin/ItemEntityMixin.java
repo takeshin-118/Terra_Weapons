@@ -25,7 +25,7 @@ abstract class ItemEntityMixin {
 
     @Unique
     private boolean terracraft$isProtectedWeapon() {
-        return ((ItemEntity) (Object) this).getStack().isOf(TerracraftMod.NETHER_AXE);
+        return ((ItemEntity) (Object) this).getStack().isOf(TerracraftMod.TERRA_AXE);
     }
 
     @Inject(method = "tick", at = @At("HEAD"))

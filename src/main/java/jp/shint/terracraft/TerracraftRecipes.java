@@ -9,14 +9,14 @@ import net.minecraft.server.network.ServerPlayerEntity;
 
 /** Keeps recipe-book mutations next to the permission workflow, not inside ItemStacks. */
 public final class TerracraftRecipes {
-    private static final RegistryKey<Recipe<?>> NETHER_AXE_RECIPE = RegistryKey.of(RegistryKeys.RECIPE, TerracraftMod.id("nether_axe"));
+    private static final RegistryKey<Recipe<?>> TERRA_AXE_RECIPE = RegistryKey.of(RegistryKeys.RECIPE, TerracraftMod.id("terra_axe"));
     private TerracraftRecipes() { }
 
-    public static void unlockNetherAxe(ServerPlayerEntity player) {
-        player.getEntityWorld().getServer().getRecipeManager().get(NETHER_AXE_RECIPE).ifPresent(recipe -> player.unlockRecipes(List.of(recipe)));
+    public static void unlockTerraAxe(ServerPlayerEntity player) {
+        player.getEntityWorld().getServer().getRecipeManager().get(TERRA_AXE_RECIPE).ifPresent(recipe -> player.unlockRecipes(List.of(recipe)));
     }
 
-    public static void lockNetherAxe(ServerPlayerEntity player) {
-        player.getEntityWorld().getServer().getRecipeManager().get(NETHER_AXE_RECIPE).ifPresent(recipe -> player.lockRecipes(List.of(recipe)));
+    public static void lockTerraAxe(ServerPlayerEntity player) {
+        player.getEntityWorld().getServer().getRecipeManager().get(TERRA_AXE_RECIPE).ifPresent(recipe -> player.lockRecipes(List.of(recipe)));
     }
 }

@@ -30,19 +30,19 @@ public final class TerracraftCommands {
                 .then(CommandManager.literal("config").then(CommandManager.literal("reload").executes(c -> reload(c.getSource())))));
     }
     private static int change(ServerCommandSource source, UUID player, String name, String id, boolean grant) {
-        if (!"nether_axe".equals(id)) { source.sendError(Text.literal("Unknown Terracraft weapon: " + id)); return 0; }
+        if (!"terra_axe".equals(id)) { source.sendError(Text.literal("Unknown Terracraft weapon: " + id)); return 0; }
         if (grant) {
             WeaponPermissions.get(source.getServer()).grant(player, id);
             ServerPlayerEntity online = source.getServer().getPlayerManager().getPlayer(player);
             if (online != null) {
-                TerracraftRecipes.unlockNetherAxe(online);
+                TerracraftRecipes.unlockTerraAxe(online);
                 PermissionHud.granted(online);
             } else WeaponPermissions.get(source.getServer()).queueNotification(player, id, true);
         } else {
             WeaponPermissions.get(source.getServer()).revoke(player, id);
             ServerPlayerEntity online = source.getServer().getPlayerManager().getPlayer(player);
             if (online != null) {
-                TerracraftRecipes.lockNetherAxe(online);
+                TerracraftRecipes.lockTerraAxe(online);
                 PermissionHud.revoked(online);
             } else WeaponPermissions.get(source.getServer()).queueNotification(player, id, false);
         }
@@ -51,7 +51,7 @@ public final class TerracraftCommands {
         return 1;
     }
     private static int check(ServerCommandSource source, UUID player, String name, String id) {
-        boolean result = "nether_axe".equals(id) && WeaponPermissions.get(source.getServer()).has(player, id);
+        boolean result = "terra_axe".equals(id) && WeaponPermissions.get(source.getServer()).has(player, id);
         source.sendFeedback(() -> Text.literal(name + ": " + result), false); return result ? 1 : 0;
     }
     private static int list(ServerCommandSource source, UUID player, String name) {

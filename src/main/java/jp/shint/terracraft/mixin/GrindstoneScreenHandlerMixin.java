@@ -17,7 +17,7 @@ abstract class GrindstoneScreenHandlerMixin {
 
     @Inject(method = "onContentChanged", at = @At("TAIL"))
     private void terracraft$blockGrindstoneOutput(Inventory changed, CallbackInfo ci) {
-        if (input.getStack(0).isOf(TerracraftMod.NETHER_AXE) || input.getStack(1).isOf(TerracraftMod.NETHER_AXE)) {
+        if (input.getStack(0).isOf(TerracraftMod.TERRA_AXE) || input.getStack(1).isOf(TerracraftMod.TERRA_AXE)) {
             result.clear();
         }
     }

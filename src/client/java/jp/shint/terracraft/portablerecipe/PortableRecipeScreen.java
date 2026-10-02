@@ -86,7 +86,7 @@ public final class PortableRecipeScreen extends Screen {
         if(!s.unlocked()){
             centerScaled(c,Text.translatable("screen.terracraft_portable_recipe_ui.locked"),leftCenter,y+h*43/100,0xFFFF7770,1F);
         }else{
-            previewCentered(c,new ItemStack(TerracraftAccess.netherAxe()),leftCenter,y+h*43/100,Math.max(1F,w/110F));
+            previewCentered(c,new ItemStack(TerracraftAccess.terraAxe()),leftCenter,y+h*43/100,Math.max(1F,w/110F));
             centerScaled(c,Text.translatable("screen.terracraft_portable_recipe_ui.preview"),leftCenter,y+h*66/100,0xFF382516,1F);
         }
         int matX=x+w*53/100,right=x+w*84/100;
@@ -147,7 +147,7 @@ public final class PortableRecipeScreen extends Screen {
         if(page==Page.DETAIL&&screenHit(click.x(),click.y(),back(b),DETAIL_SCALE)){page=Page.BOOKSHELF;return true;}
         if(page==Page.DETAIL&&screenHit(click.x(),click.y(),craft(b),DETAIL_SCALE)){
             PortableRecipeClient.RecipeViewState state=PortableRecipeClient.state();
-            if(state.unlocked()&&state.netheriteCount()>=3&&state.blazeRodCount()>=2){ClientPlayNetworking.send(new PortableRecipeNetworking.CraftNetherAxePayload());}
+            if(state.unlocked()&&state.netheriteCount()>=3&&state.blazeRodCount()>=2){ClientPlayNetworking.send(new PortableRecipeNetworking.CraftTerraAxePayload());}
             return true;
         }
         return super.mouseClicked(click,doubleClicked);

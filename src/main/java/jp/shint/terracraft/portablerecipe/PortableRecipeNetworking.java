@@ -14,7 +14,7 @@ import net.minecraft.util.Identifier;
 
 public final class PortableRecipeNetworking {
     public static final CustomPayload.Id<RequestStatePayload> REQUEST_STATE = id("request_state");
-    public static final CustomPayload.Id<CraftNetherAxePayload> CRAFT_NETHER_AXE = id("craft_nether_axe");
+    public static final CustomPayload.Id<CraftTerraAxePayload> CRAFT_TERRA_AXE = id("craft_terra_axe");
     public static final CustomPayload.Id<RecipeStatePayload> RECIPE_STATE = id("recipe_state");
 
     private PortableRecipeNetworking() {
@@ -22,17 +22,17 @@ public final class PortableRecipeNetworking {
 
     public static void initializeServer() {
         PayloadTypeRegistry.playC2S().register(REQUEST_STATE, RequestStatePayload.CODEC);
-        PayloadTypeRegistry.playC2S().register(CRAFT_NETHER_AXE, CraftNetherAxePayload.CODEC);
+        PayloadTypeRegistry.playC2S().register(CRAFT_TERRA_AXE, CraftTerraAxePayload.CODEC);
         PayloadTypeRegistry.playS2C().register(RECIPE_STATE, RecipeStatePayload.CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(REQUEST_STATE, (payload, context) ->
                 context.server().execute(() -> sendState(context.player(), "")));
-        ServerPlayNetworking.registerGlobalReceiver(CRAFT_NETHER_AXE, (payload, context) ->
-                context.server().execute(() -> craftNetherAxe(context.player())));
+        ServerPlayNetworking.registerGlobalReceiver(CRAFT_TERRA_AXE, (payload, context) ->
+                context.server().execute(() -> craftTerraAxe(context.player())));
     }
 
-    private static void craftNetherAxe(ServerPlayerEntity player) {
-        if (!TerracraftAccess.hasNetherAxePermission(player)) {
+    private static void craftTerraAxe(ServerPlayerEntity player) {
+        if (!TerracraftAccess.hasTerraAxePermission(player)) {
             sendState(player, "儀式により解放してください");
             return;
         }
@@ -44,7 +44,7 @@ public final class PortableRecipeNetworking {
             sendState(player, "ブレイズロッドが不足しています");
             return;
         }
-        if (!PortableRecipeCrafting.tryCraft(player.getInventory(), TerracraftAccess.netherAxe())) {
+        if (!PortableRecipeCrafting.tryCraft(player.getInventory(), TerracraftAccess.terraAxe())) {
             sendState(player, "インベントリに空きがありません");
             return;
         }
@@ -70,7 +70,7 @@ public final class PortableRecipeNetworking {
 
     private static void sendState(ServerPlayerEntity player, String message) {
         ServerPlayNetworking.send(player, new RecipeStatePayload(
-                TerracraftAccess.hasNetherAxePermission(player),
+                TerracraftAccess.hasTerraAxePermission(player),
                 count(player, Items.NETHERITE_INGOT),
                 count(player, Items.BLAZE_ROD),
                 message
@@ -90,12 +90,12 @@ public final class PortableRecipeNetworking {
         }
     }
 
-    public record CraftNetherAxePayload() implements CustomPayload {
-        public static final PacketCodec<RegistryByteBuf, CraftNetherAxePayload> CODEC = PacketCodec.unit(new CraftNetherAxePayload());
+    public record CraftTerraAxePayload() implements CustomPayload {
+        public static final PacketCodec<RegistryByteBuf, CraftTerraAxePayload> CODEC = PacketCodec.unit(new CraftTerraAxePayload());
 
         @Override
         public Id<? extends CustomPayload> getId() {
-            return CRAFT_NETHER_AXE;
+            return CRAFT_TERRA_AXE;
         }
     }
 

@@ -4,10 +4,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-/** Default nether-axe altar definition. Rotation is accepted; mirroring is deliberately not. */
+/** Default terra-axe altar definition. Rotation is accepted; mirroring is deliberately not. */
 public final class AltarStructure {
     private AltarStructure() { }
-    public static boolean matchesNetherAxe(World world, BlockPos core) {
+    public static boolean matchesTerraAxe(World world, BlockPos core) {
         return missingMask(world, core) == 0;
     }
     /** One bit per floor cell; the rotation with the fewest missing blocks is shown to the player. */

@@ -18,9 +18,9 @@ abstract class EnchantmentScreenHandlerMixin {
 
     @Inject(method = "onButtonClick", at = @At("HEAD"), cancellable = true)
     private void terracraft$rejectEnchantingTable(PlayerEntity player, int id, CallbackInfoReturnable<Boolean> cir) {
-        if (inventory.getStack(0).isOf(TerracraftMod.NETHER_AXE)
+        if (inventory.getStack(0).isOf(TerracraftMod.TERRA_AXE)
                 && !(player instanceof net.minecraft.server.network.ServerPlayerEntity serverPlayer
-                && WeaponPermissions.hasNetherAxe(serverPlayer))) {
+                && WeaponPermissions.hasTerraAxe(serverPlayer))) {
             cir.setReturnValue(false);
         }
     }

@@ -1,11 +1,11 @@
 {
-  "item.terracraft.nether_axe": "名称未定のネザー斧",
+  "item.terracraft.terra_axe": "名称未定のテラ斧",
   "block.terracraft.altar_core": "祭壇コア",
   "itemGroup.terracraft.terracraft": "Terracraft",
   "message.terracraft.tree_limit": "同時に処理できる木の上限に達しています",
   "message.terracraft.tree_player_limit": "自分の一括破壊キューは最大4件です",
   "message.terracraft.tree_busy": "この木はすでに一括破壊の対象です",
-  "message.terracraft.altar_ready": "ネザー斧の祭壇構造が完成しています",
+  "message.terracraft.altar_ready": "テラ斧の祭壇構造が完成しています",
   "message.terracraft.altar_incomplete": "対応する祭壇構造が完成していません",
   "message.terracraft.altar_incomplete_detail": "祭壇が未完成です。コアの真下に5×5の床を組み、コアの周囲は空気にしてください。供物が揃った完成済み祭壇は、通常右クリックだけで儀式を開始します。",
   "message.terracraft.altar_busy": "この祭壇は別の儀式を実行中です",
@@ -21,12 +21,12 @@
   "command.terracraft.unknown_weapon": "不明な武器ID: %s",
   "container.terracraft.altar": "祭壇への奉納"
   ,"message.terracraft.altar_in_use": "この祭壇はほかのプレイヤーが使用中です",
-  "container.terracraft.portable_crafting": "ネザーアックス携帯クラフト"
+  "container.terracraft.portable_crafting": "テラアックス携帯クラフト"
   ,"screen.terracraft.altar.offerings": "供物の環"
   ,"screen.terracraft.altar.structure": "祭壇構造"
   ,"screen.terracraft.altar.complete": "緑: 設置済み  赤: 不足"
   ,"screen.terracraft.altar.begin": "儀式を開始"
-  ,"screen.terracraft.portable.selected": "選択中: ネザー斧"
+  ,"screen.terracraft.portable.selected": "選択中: テラ斧"
   ,"screen.terracraft.portable.materials": "必要素材: ダイヤブロック ×4 / 泣く黒曜石 ×4 / ネザースター ×1"
   ,"screen.terracraft.portable.recipe": "作成物: 祭壇コア"
   ,"screen.terracraft.portable.craft": "作成"
