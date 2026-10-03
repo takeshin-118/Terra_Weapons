@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 abstract class ItemEntityMixin {
     private static final int TERRACRAFT_MAX_DROP_AGE = 12_000;
     @Shadow private int itemAge;
+    @Shadow private int pickupDelay;
     @Unique private int terracraft$dropAge;
 
     @Unique
@@ -31,6 +32,9 @@ abstract class ItemEntityMixin {
     @Inject(method = "tick", at = @At("HEAD"))
     private void terracraft$keepDroppedWeapon(CallbackInfo ci) {
         if (!terracraft$isProtectedWeapon()) return;
+        // /give creates an unpickable visual copy with age 5999. Let vanilla
+        // remove it instead of resetting its age and keeping a ghost axe alive.
+        if (pickupDelay == 32_767) return;
         if (++terracraft$dropAge >= TERRACRAFT_MAX_DROP_AGE) {
             ((ItemEntity) (Object) this).discard();
             return;

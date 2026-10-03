@@ -41,6 +41,23 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameMode;
 
 public class WeaponEnchantmentGameTests {
+    @GameTest public void giveVisualCopyDespawnsButRealAxeIsProtected(TestContext context) {
+        var world = context.getWorld();
+        var pos = context.getAbsolutePos(new BlockPos(1, 2, 1));
+        var visual = new net.minecraft.entity.ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), axe());
+        visual.setDespawnImmediately();
+        visual.tick();
+        context.assertTrue(visual.isRemoved(), "The unpickable /give visual must disappear after one tick");
+
+        var real = new net.minecraft.entity.ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), axe());
+        real.setNoGravity(true);
+        for (int tick = 0; tick < 11_999; tick++) real.tick();
+        context.assertFalse(real.isRemoved(), "Real dropped axes must survive past vanilla's five-minute lifetime");
+        real.tick();
+        context.assertTrue(real.isRemoved(), "Real dropped axes must expire after ten minutes");
+        context.complete();
+    }
+
     private static ServerPlayerEntity player(TestContext context, boolean licensed) {
         var world = context.getWorld();
         var server = world.getServer();
