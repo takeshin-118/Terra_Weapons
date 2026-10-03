@@ -1,24 +1,17 @@
 package jp.shint.terracraft.mixin;
 
-import jp.shint.terracraft.TerracraftMod;
-import net.minecraft.inventory.Inventory;
+import jp.shint.terracraft.WeaponWorkstation;
+import net.minecraft.item.ItemStack;
 import net.minecraft.screen.GrindstoneScreenHandler;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-/** Prevents a grindstone from stripping the weapon's controlled enchantments. */
 @Mixin(GrindstoneScreenHandler.class)
 abstract class GrindstoneScreenHandlerMixin {
-    @Shadow private Inventory result;
-    @Shadow private Inventory input;
-
-    @Inject(method = "onContentChanged", at = @At("TAIL"))
-    private void terracraft$blockGrindstoneOutput(Inventory changed, CallbackInfo ci) {
-        if (input.getStack(0).isOf(TerracraftMod.TERRA_AXE) || input.getStack(1).isOf(TerracraftMod.TERRA_AXE)) {
-            result.clear();
-        }
+    @Inject(method = "getOutputStack", at = @At("HEAD"), cancellable = true)
+    private void terracraft$validate(ItemStack first, ItemStack second, CallbackInfoReturnable<ItemStack> cir) {
+        if (((WeaponWorkstation) this).terracraft$problem() != WeaponWorkstation.NONE) cir.setReturnValue(ItemStack.EMPTY);
     }
 }

@@ -31,6 +31,10 @@ public final class TreeFellingManager {
     /** Positions claimed by active queues, so the same tree cannot be queued twice. */
     private static final Set<BlockPos> RESERVED_POSITIONS = new HashSet<>();
     private static boolean breakingQueuedBlock;
+    private static boolean breakingQueuedFoliage;
+
+    /** Only automatically processed foliage is exempt from tool wear. */
+    public static boolean skipsQueuedDurability() { return breakingQueuedFoliage; }
 
     private TreeFellingManager() { }
 
@@ -167,15 +171,26 @@ public final class TreeFellingManager {
             Task task = iterator.next();
             ServerPlayerEntity player = server.getPlayerManager().getPlayer(task.playerId);
             if (player == null || player.getEntityWorld() != task.world || !player.isAlive()
+                    || !WeaponPermissions.hasTerraAxe(player) || player.isSneaking()
                     || !player.getMainHandStack().isOf(TerracraftMod.TERRA_AXE)
                     || !task.axeId.equals(axeId(player.getMainHandStack()))) { release(task); iterator.remove(); continue; }
             int used = 0;
             while (used < TerracraftConfig.tree().perTaskPerTick() && budget > 0 && !task.positions.isEmpty()) {
+                ItemStack axe = player.getMainHandStack();
+                if (!axe.isOf(TerracraftMod.TERRA_AXE) || !task.axeId.equals(axeId(axe))
+                        || !WeaponPermissions.hasTerraAxe(player)
+                        || axe.getMaxDamage() - axe.getDamage() <= 1) {
+                    release(task);
+                    task.positions.clear();
+                    break;
+                }
                 BlockPos pos = task.positions.removeFirst();
                 RESERVED_POSITIONS.remove(pos);
                 if (isTargetLog(task.world.getBlockState(pos)) || isFellingFoliage(task.world.getBlockState(pos))) {
                     breakingQueuedBlock = true;
-                    try { player.interactionManager.tryBreakBlock(pos); } finally { breakingQueuedBlock = false; }
+                    breakingQueuedFoliage = !isTargetLog(task.world.getBlockState(pos));
+                    try { player.interactionManager.tryBreakBlock(pos); }
+                    finally { breakingQueuedBlock = false; breakingQueuedFoliage = false; }
                     mergeNearbyDrops(task.world, pos);
                 }
                 used++; budget--;

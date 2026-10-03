@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "id": "terracraft-test",
+  "version": "1.0.0",
+  "name": "Terracraft Game Tests",
+  "environment": "server",
+  "entrypoints": {
+    "fabric-gametest": ["jp.shint.terracraft.WeaponEnchantmentGameTests"]
+  },
+  "depends": { "terracraft": "*", "fabric-gametest-api-v1": "*" }
+}

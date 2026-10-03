@@ -1,39 +1,42 @@
 package jp.shint.terracraft.mixin;
 
 import jp.shint.terracraft.TerracraftMod;
+import jp.shint.terracraft.WeaponWorkstation;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.screen.AnvilScreenHandler;
 import net.minecraft.screen.Property;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Constant;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyConstant;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-/** Allows a Terracraft weapon to use the anvil up to level 51 at 1.3x cost. */
 @Mixin(AnvilScreenHandler.class)
 abstract class AnvilScreenHandlerMixin {
     @Shadow private Property levelCost;
+    @Unique private AnvilScreenHandler terracraft$handler() { return (AnvilScreenHandler) (Object) this; }
+    @Unique private boolean terracraft$isAxe() { return terracraft$handler().getSlot(0).getStack().isOf(TerracraftMod.TERRA_AXE); }
+
+    @Inject(method = "updateResult", at = @At("HEAD"), cancellable = true)
+    private void terracraft$validate(CallbackInfo ci) {
+        if (((WeaponWorkstation) this).terracraft$problem() != WeaponWorkstation.NONE) {
+            terracraft$handler().getSlot(2).setStack(ItemStack.EMPTY);
+            levelCost.set(0);
+            ci.cancel();
+        }
+    }
+
+    // Clamp before vanilla tests the cost, including costs saturated at Integer.MAX_VALUE.
+    @ModifyArg(method = "updateResult", at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/Property;set(I)V"), index = 0)
+    private int terracraft$capCost(int cost) { return terracraft$isAxe() ? Math.min(64, cost) : cost; }
 
     @ModifyConstant(method = "updateResult", constant = @Constant(intValue = 40))
-    private int terracraft$raiseVanillaTooExpensiveLimit(int original) {
-        return 52;
-    }
-
-    @Inject(method = "updateResult", at = @At("TAIL"))
-    private void terracraft$applyTerracraftAnvilCost(CallbackInfo ci) {
-        if (!((AnvilScreenHandler) (Object) this).getSlot(0).getStack().isOf(TerracraftMod.TERRA_AXE)) return;
-        int cost = levelCost.get();
-        if (cost > 0) levelCost.set(Math.min(51, (int) Math.ceil(cost * 1.3D)));
-    }
+    private int terracraft$costLimit(int original) { return terracraft$isAxe() ? 65 : original; }
 
     @Inject(method = "canTakeOutput", at = @At("HEAD"), cancellable = true)
-    private void terracraft$permitLevelFiftyOne(PlayerEntity player, boolean present, CallbackInfoReturnable<Boolean> cir) {
-        if (!((AnvilScreenHandler) (Object) this).getSlot(0).getStack().isOf(TerracraftMod.TERRA_AXE)) return;
-        int cost = levelCost.get();
-        cir.setReturnValue(present && (player.getAbilities().creativeMode || (cost > 0 && cost <= 51 && player.experienceLevel >= cost)));
+    private void terracraft$validateTake(PlayerEntity player, boolean present, CallbackInfoReturnable<Boolean> cir) {
+        if (((WeaponWorkstation) this).terracraft$problem() != WeaponWorkstation.NONE) cir.setReturnValue(false);
     }
 }

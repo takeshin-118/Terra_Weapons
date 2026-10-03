@@ -8,10 +8,20 @@
     "GrindstoneScreenHandlerMixin",
     "CraftingScreenHandlerMixin",
     "CrafterBlockMixin",
-    "AnvilScreenHandlerMixin"
+    "AnvilScreenHandlerMixin",
+    "WeaponWorkstationMixin",
+    "WorkstationScreenHandlerMixin",
+    "RepairItemRecipeMixin",
+    "WeaponItemStackMixin",
+    "WeaponPlayerInventoryMixin",
+    "WeaponLivingEntityMixin",
+    "WeaponEnchantmentHelperMixin",
+    "WeaponLootConditionMixin"
   ],
   "client": [
-    "JeiIngredientListOverlayMixin"
+    "JeiIngredientListOverlayMixin",
+    "WeaponWorkstationScreenMixin",
+    "WeaponAnvilScreenMixin"
   ],
   "injectors": { "defaultRequire": 1 }
 }

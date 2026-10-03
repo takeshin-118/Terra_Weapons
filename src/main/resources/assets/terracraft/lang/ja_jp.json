@@ -47,5 +47,7 @@
   "jei.terracraft.scene.floor": "床",
   "jei.terracraft.scene.materials": "祭壇のブロック（床25個 + コア1個）",
   "jei.terracraft.scene.rights": "権利",
-  "jei.terracraft.scene.position": "コアからの位置: X %s / Y %s / Z %s"
+  "jei.terracraft.scene.position": "コアからの位置: X %s / Y %s / Z %s",
+  "message.terracraft.enchant_permission_required": "テラオノの権利が必要です",
+  "message.terracraft.too_hard_to_combine": "硬すぎてくっつかない"
 }

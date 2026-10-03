@@ -38,5 +38,7 @@
   "jei.terracraft.scene.floor": "Floor",
   "jei.terracraft.scene.materials": "Structure (25 floor blocks + 1 core)",
   "jei.terracraft.scene.rights": "Rights",
-  "jei.terracraft.scene.position": "From core: X %s / Y %s / Z %s"
+  "jei.terracraft.scene.position": "From core: X %s / Y %s / Z %s",
+  "message.terracraft.enchant_permission_required": "Terra Axe permission required",
+  "message.terracraft.too_hard_to_combine": "Too hard to fuse together"
 }

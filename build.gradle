@@ -44,6 +44,16 @@ dependencies {
 
 test { useJUnitPlatform() }
 
+// Runs Minecraft-backed regression tests in an isolated generated world.
+fabricApi {
+    configureTests {
+        createSourceSet = true
+        modId = 'terracraft-test'
+        enableGameTests = true
+        enableClientGameTests = false
+    }
+}
+
 processResources {
 	def version = project.version
 	inputs.property "version", version
