@@ -32,11 +32,11 @@ JEI 27.35.0.90（Minecraft 1.21.11）を導入すると、テラオノのレシ�
 | Fabric API | ビルド・検証版：0.141.6+1.21.11 |
 | GeckoLib | 1.21.11用の5.4.2以上 |
 
-サーバーと参加する全クライアントの `mods` フォルダーに、依存MODと `terracraft-0.1.4.jar` を配置します。旧バージョンのJARは外し、`-sources.jar` は開発用なので導入しません。
+サーバーと参加する全クライアントの `mods` フォルダーに、依存MODと `terracraft-0.1.5.jar` を配置します。旧バージョンのJARは外し、`-sources.jar` は開発用なので導入しません。
 
 ### 旧2本構成からの移行
 
-1. 旧本体JARを統合版 `terracraft-0.1.4.jar` に差し替えます。
+1. 旧本体JARを統合版 `terracraft-0.1.5.jar` に差し替えます。
 2. 旧 `terracraft-portable-recipe-ui-*.jar` を `mods` フォルダーから外します。
 3. サーバーとクライアントの両方を統合版に揃えて起動します。
 
@@ -72,7 +72,7 @@ Java 21のJDKを設定し、リポジトリのルートで実行します。
 .\gradlew.bat clean build
 ```
 
-Linux/macOSでは `./gradlew clean build` を実行します。成果物は `build/libs/terracraft-0.1.4.jar` です。ビルド時に携帯レシピの素材消費・空きスロット判定の回帰テストも実行します。
+Linux/macOSでは `./gradlew clean build` を実行します。成果物は `build/libs/terracraft-0.1.5.jar` です。ビルド時に携帯レシピの素材消費・空きスロット判定の回帰テストも実行します。
 
 - `src/main/`：武器・祭壇・権利管理・携帯作成のサーバー処理と素材。
 - `src/client/`：祭壇・携帯作成・携帯レシピの画面。

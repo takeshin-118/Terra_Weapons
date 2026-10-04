@@ -275,6 +275,25 @@ public class WeaponEnchantmentGameTests {
         context.complete();
     }
 
+    @GameTest public void jungleFellingPreservesOakAndRespectsLeafCap(TestContext context) {
+        var origin = context.getAbsolutePos(new BlockPos(2, 2, 2));
+        context.setBlockState(2, 3, 2, Blocks.JUNGLE_LOG);
+        context.setBlockState(2, 4, 2, Blocks.JUNGLE_LEAVES);
+        context.setBlockState(3, 4, 2, Blocks.JUNGLE_LEAVES);
+        context.setBlockState(3, 3, 2, Blocks.OAK_LOG);
+        context.setBlockState(4, 4, 2, Blocks.OAK_LEAVES);
+        context.setBlockState(1, 4, 2, Blocks.JUNGLE_LEAVES.getDefaultState().with(net.minecraft.state.property.Properties.PERSISTENT, true));
+        for (int limit : new int[] {0, 1, 2, 100}) {
+            var queue = TreeFellingManager.findConnectedLogs(context.getWorld(), origin, Blocks.JUNGLE_LOG.getDefaultState(), limit);
+            context.assertTrue(queue.contains(context.getAbsolutePos(new BlockPos(2, 3, 2))), "Leaf cap must not cancel logs");
+            context.assertEquals(queue.size(), 1 + Math.min(limit, 2), "Bound foliage and preserve oak and placed leaves");
+            context.assertFalse(queue.contains(context.getAbsolutePos(new BlockPos(3, 3, 2))), "Preserve oak trunk");
+            context.assertFalse(queue.contains(context.getAbsolutePos(new BlockPos(4, 4, 2))), "Preserve oak leaves");
+            context.assertFalse(queue.contains(context.getAbsolutePos(new BlockPos(1, 4, 2))), "Preserve placed leaves");
+        }
+        context.complete();
+    }
+
     @GameTest(maxTicks = 40) public void fellingOnlyConsumesLogsAndKeepsSilkTouch(TestContext context) {
         var player = player(context, true);
         ItemStack axe = axe();

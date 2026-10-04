@@ -55,14 +55,14 @@ public final class TreeFellingManager {
         TerracraftConfig.TreeFellingDefinition settings = TerracraftConfig.tree();
         if (TASKS.size() >= settings.maxTasks()) { player.sendMessage(net.minecraft.text.Text.translatable("message.terracraft.tree_limit"), true); return; }
         if (taskCount(player.getUuid()) >= settings.maxTasksPerPlayer()) { player.sendMessage(net.minecraft.text.Text.translatable("message.terracraft.tree_player_limit"), true); return; }
-        ArrayDeque<BlockPos> queue = findConnectedLogs(world, origin, state);
+        ArrayDeque<BlockPos> queue = findConnectedLogs(world, origin, state, settings.maxFoliage());
         if (queue.isEmpty()) return;
         for (BlockPos position : queue) if (RESERVED_POSITIONS.contains(position)) {
             player.sendMessage(net.minecraft.text.Text.translatable("message.terracraft.tree_busy"), true);
             return;
         }
         RESERVED_POSITIONS.addAll(queue);
-        TASKS.add(new Task(player.getUuid(), world, queue, axeId(player.getMainHandStack())));
+        TASKS.add(new Task(player.getUuid(), world, queue, axeId(player.getMainHandStack()), state));
     }
 
     private static boolean eligible(ServerPlayerEntity player, BlockState state) {
@@ -93,7 +93,7 @@ public final class TreeFellingManager {
         return id;
     }
 
-    private static ArrayDeque<BlockPos> findConnectedLogs(ServerWorld world, BlockPos origin, BlockState originState) {
+    static ArrayDeque<BlockPos> findConnectedLogs(ServerWorld world, BlockPos origin, BlockState originState, int maxFoliage) {
         ArrayDeque<BlockPos> result = new ArrayDeque<>();
         ArrayDeque<BlockPos> search = new ArrayDeque<>();
         Set<BlockPos> visited = new HashSet<>();
@@ -114,15 +114,15 @@ public final class TreeFellingManager {
                 }
             }
         }
-        ArrayDeque<BlockPos> foliage = findNaturalLeaves(world, origin, result);
-        if (foliage == null) return new ArrayDeque<>();
+        ArrayDeque<BlockPos> foliage = findNaturalLeaves(world, origin, result, originState, maxFoliage);
         result.addAll(foliage);
         return result;
     }
 
     /** Finds only leaf blocks attached to this log cluster; hand-placed persistent leaves are preserved. */
-    private static ArrayDeque<BlockPos> findNaturalLeaves(ServerWorld world, BlockPos origin, ArrayDeque<BlockPos> logs) {
+    private static ArrayDeque<BlockPos> findNaturalLeaves(ServerWorld world, BlockPos origin, ArrayDeque<BlockPos> logs, BlockState originState, int maxFoliage) {
         ArrayDeque<BlockPos> foliage = new ArrayDeque<>();
+        if (maxFoliage == 0) return foliage;
         ArrayDeque<BlockPos> search = new ArrayDeque<>();
         Set<BlockPos> visited = new HashSet<>();
         search.add(origin);
@@ -133,10 +133,11 @@ public final class TreeFellingManager {
                 if (x == 0 && y == 0 && z == 0) continue;
                 BlockPos next = current.add(x, y, z);
                 if (!visited.add(next)) continue;
-                if (!world.isChunkLoaded(next)) return null;
-                if (!isFellingFoliage(world.getBlockState(next)) || !nearLog(next, origin, logs)) continue;
-                if (foliage.size() >= TerracraftConfig.tree().maxFoliage()) return null;
+                if (!world.isChunkLoaded(next)) continue;
+                if (!isFellingFoliage(world.getBlockState(next), originState) || !nearLog(next, origin, logs)) continue;
                 foliage.addLast(next);
+                // Keep the logs even when foliage exceeds the safety cap.
+                if (foliage.size() >= maxFoliage) return foliage;
                 search.addLast(next);
             }
         }
@@ -148,14 +149,24 @@ public final class TreeFellingManager {
     }
 
     /** Leaves plus vegetation which is physically attached to a natural tree or nether fungus. */
-    private static boolean isFellingFoliage(BlockState state) {
-        if (isNaturalLeaf(state)) return true;
+    private static boolean isFellingFoliage(BlockState state, BlockState originState) {
+        if (state.isIn(BlockTags.LEAVES)) return isNaturalLeaf(state) && matchesLeafSpecies(state, originState);
         TerracraftConfig.TreeFellingDefinition settings = TerracraftConfig.tree();
         if ((settings.includeVines() && state.isOf(Blocks.VINE)) || (settings.includeCocoa() && state.isOf(Blocks.COCOA))) return true;
         return settings.includeNetherFoliage() && (state.isOf(Blocks.NETHER_WART_BLOCK) || state.isOf(Blocks.WARPED_WART_BLOCK)
                 || state.isOf(Blocks.SHROOMLIGHT) || state.isOf(Blocks.WEEPING_VINES)
                 || state.isOf(Blocks.WEEPING_VINES_PLANT) || state.isOf(Blocks.TWISTING_VINES)
                 || state.isOf(Blocks.TWISTING_VINES_PLANT));
+    }
+
+    private static boolean matchesLeafSpecies(BlockState leaf, BlockState log) {
+        // Azalea trees have oak logs.
+        if (log.isOf(Blocks.OAK_LOG) && (leaf.isOf(Blocks.AZALEA_LEAVES) || leaf.isOf(Blocks.FLOWERING_AZALEA_LEAVES))) return true;
+        var logId = net.minecraft.registry.Registries.BLOCK.getId(log.getBlock());
+        var leafId = net.minecraft.registry.Registries.BLOCK.getId(leaf.getBlock());
+        String path = logId.getPath();
+        return path.endsWith("_log") && logId.getNamespace().equals(leafId.getNamespace())
+                && leafId.getPath().equals(path.substring(0, path.length() - 4) + "_leaves");
     }
 
     private static boolean nearLog(BlockPos position, BlockPos origin, ArrayDeque<BlockPos> logs) {
@@ -186,7 +197,7 @@ public final class TreeFellingManager {
                 }
                 BlockPos pos = task.positions.removeFirst();
                 RESERVED_POSITIONS.remove(pos);
-                if (isTargetLog(task.world.getBlockState(pos)) || isFellingFoliage(task.world.getBlockState(pos))) {
+                if (task.world.getBlockState(pos).isOf(task.originState.getBlock()) || isFellingFoliage(task.world.getBlockState(pos), task.originState)) {
                     breakingQueuedBlock = true;
                     breakingQueuedFoliage = !isTargetLog(task.world.getBlockState(pos));
                     try { player.interactionManager.tryBreakBlock(pos); }
@@ -222,5 +233,5 @@ public final class TreeFellingManager {
         }
     }
 
-    private record Task(UUID playerId, ServerWorld world, ArrayDeque<BlockPos> positions, String axeId) { }
+    private record Task(UUID playerId, ServerWorld world, ArrayDeque<BlockPos> positions, String axeId, BlockState originState) { }
 }
