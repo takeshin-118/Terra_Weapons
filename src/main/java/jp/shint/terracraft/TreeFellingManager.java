@@ -152,7 +152,9 @@ public final class TreeFellingManager {
     private static boolean isFellingFoliage(BlockState state, BlockState originState) {
         if (state.isIn(BlockTags.LEAVES)) return isNaturalLeaf(state) && matchesLeafSpecies(state, originState);
         TerracraftConfig.TreeFellingDefinition settings = TerracraftConfig.tree();
-        if ((settings.includeVines() && state.isOf(Blocks.VINE)) || (settings.includeCocoa() && state.isOf(Blocks.COCOA))) return true;
+        if (originState.isOf(Blocks.JUNGLE_LOG)
+                && ((settings.includeVines() && state.isOf(Blocks.VINE))
+                || (settings.includeCocoa() && state.isOf(Blocks.COCOA)))) return true;
         return settings.includeNetherFoliage() && (state.isOf(Blocks.NETHER_WART_BLOCK) || state.isOf(Blocks.WARPED_WART_BLOCK)
                 || state.isOf(Blocks.SHROOMLIGHT) || state.isOf(Blocks.WEEPING_VINES)
                 || state.isOf(Blocks.WEEPING_VINES_PLANT) || state.isOf(Blocks.TWISTING_VINES)
